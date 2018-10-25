@@ -78,6 +78,7 @@ namespace zVirtualDesktop
 
         public static void CheckVersion()
         {
+            /*
             try
             {
                 MainForm.timerCheckVersion.Enabled = false;
@@ -100,7 +101,7 @@ namespace zVirtualDesktop
             {
                 MainForm.timerCheckVersion.Enabled = true;
             }
-            catch { }
+            catch { }*/
         }
 
         public static string GetCurrentVersion()

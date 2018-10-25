@@ -2249,24 +2249,26 @@ namespace zVirtualDesktop
         private void mnuBuyBeer_Click(object sender, EventArgs e)
         {
             Log.LogEvent("Buy me a beer", "", "", "frmMain", null);
-            System.Diagnostics.Process.Start("https://www.paypal.me/MichaelZomparelli/5");
+            //System.Diagnostics.Process.Start("https://www.paypal.me/MichaelZomparelli/5");
         }
 
         private void mnuBuyLunch_Click(object sender, EventArgs e)
         {
             Log.LogEvent("Buy me lunch", "", "", "frmMain", null);
-            System.Diagnostics.Process.Start("https://www.paypal.me/MichaelZomparelli/10");
+            //System.Diagnostics.Process.Start("https://www.paypal.me/MichaelZomparelli/10");
         }
 
         private void mnuBuyDinner_Click(object sender, EventArgs e)
         {
             Log.LogEvent("Buy me dinner", "", "", "frmMain", null);
-            System.Diagnostics.Process.Start("https://www.paypal.me/MichaelZomparelli/25");
+            //System.Diagnostics.Process.Start("https://www.paypal.me/MichaelZomparelli/25");
         }
 
         private void mnuBuyLamborghini_Click(object sender, EventArgs e)
         {
+            
             Log.LogEvent("Buy me a Lamborghini", "", "", "frmMain", null);
+            /*
             DialogResult result = MessageBox.Show("OMG for real!?", ":D", MessageBoxButtons.YesNo);
             if(result == DialogResult.Yes)
             {
@@ -2293,19 +2295,23 @@ namespace zVirtualDesktop
             {
                 result = MessageBox.Show("Oh well, I guess I should have known you were just messing with me.", "oh well", MessageBoxButtons.AbortRetryIgnore);
             }
-            
+            */
         }
 
         private void mnuBuyOtherAmount_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://www.paypal.me/MichaelZomparelli/");
+            //System.Diagnostics.Process.Start("https://www.paypal.me/MichaelZomparelli/");
         }
+
+
+
 
         #endregion
 
-        
+        private void lstHotkeys_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
-   
+        }
     }
 }
 

@@ -461,12 +461,8 @@ public class Hotkey : IDisposable
     }
 
 
-    public class NativeMethods
+    public static class NativeMethods
     {
-
-        private NativeMethods()
-        {
-        }
 
         internal const uint MOD_ALT = 0x1;
         internal const uint MOD_CONTROL = 0x2;
@@ -476,8 +472,7 @@ public class Hotkey : IDisposable
 
         internal const int WM_HOTKEY = 0x312;
         [DllImport("kernel32", EntryPoint = "GlobalAddAtom", SetLastError = true, ExactSpelling = false)]
-        public static extern int GlobalAddAtom([MarshalAs(UnmanagedType.LPTStr)]
-string lpString);
+        public static extern int GlobalAddAtom([MarshalAs(UnmanagedType.LPTStr)] string lpString);
 
 
         [DllImport("user32", SetLastError = true)]
