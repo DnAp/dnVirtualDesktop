@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace zVirtualDesktop.Internal
+namespace dnVirtualDesktop.Internal
 {
     public static class Windows
     {

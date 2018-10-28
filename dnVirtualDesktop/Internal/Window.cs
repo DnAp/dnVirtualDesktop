@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using WindowsDesktop;
 using WindowsDesktop.Internal;
 
-namespace zVirtualDesktop
+namespace dnVirtualDesktop
 {
     public class Window
     {

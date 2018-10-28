@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VB = Microsoft.VisualBasic;
 
-namespace zVirtualDesktop
+namespace dnVirtualDesktop
 {
 
     using Microsoft.VisualBasic;

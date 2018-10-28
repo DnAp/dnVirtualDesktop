@@ -13,9 +13,9 @@ using System.Windows.Forms;
 using WindowsDesktop;
 using WindowsInput;
 using WindowsInput.Native;
-using zVirtualDesktop.Internal;
+using dnVirtualDesktop.Internal;
 
-namespace zVirtualDesktop
+namespace dnVirtualDesktop
 {
     public partial class frmMain : Form
     { 
@@ -51,7 +51,7 @@ namespace zVirtualDesktop
             btnBrowseDefaultWalpaper.Click += btnBrowseWallpaper_Click;
 
             lblVersion.Text = Program.version;
-            SystemTray.Text = "zVirtualDesktop " + Program.version;
+            SystemTray.Text = "dnVirtualDesktop " + Program.version;
 
             //Create a new thread to retrieve the ProgID and Executables on this machine.
             //This is used so that the app is able to pin an application
@@ -198,7 +198,7 @@ namespace zVirtualDesktop
 
         private void mnuGithub_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/mzomparelli/zVirtualDesktop");
+            System.Diagnostics.Process.Start("https://github.com/mzomparelli/dnVirtualDesktop");
         }
 
         private void mnuGatherWindows_Click(object sender, EventArgs e)
@@ -1857,7 +1857,7 @@ namespace zVirtualDesktop
         {
             try
             {
-                if (Program.storage.FileExists("zVirtualDesktop.bin") == false)
+                if (Program.storage.FileExists("dnVirtualDesktop.bin") == false)
                 {
                     cmbIcons.Text = "Green";
                     CreateDefaultHotkeys_Numpad();
@@ -1866,7 +1866,7 @@ namespace zVirtualDesktop
                     SaveSettings();
                 }
               
-                System.IO.Stream stream = new IsolatedStorageFileStream("zVirtualDesktop.bin", System.IO.FileMode.Open, Program.storage);
+                System.IO.Stream stream = new IsolatedStorageFileStream("dnVirtualDesktop.bin", System.IO.FileMode.Open, Program.storage);
                 System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
                 object oo = bf.Deserialize(stream);
                 string settings = (string)oo;
@@ -2044,7 +2044,7 @@ namespace zVirtualDesktop
                     settings.Append("~" + hki.Type + ";" + hki.DesktopNumber() + ";" + hki.ALT().ToString() + ";" + hki.CTRL().ToString() + ";" + hki.SHIFT().ToString() + ";" + hki.WIN().ToString() + ";" + hki.KEY());
                 }
 
-                System.IO.Stream stream = new IsolatedStorageFileStream("zVirtualDesktop.bin", System.IO.FileMode.OpenOrCreate, Program.storage);
+                System.IO.Stream stream = new IsolatedStorageFileStream("dnVirtualDesktop.bin", System.IO.FileMode.OpenOrCreate, Program.storage);
                 System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
                 bf.Serialize(stream, settings.ToString());
                 stream.Close();
@@ -2097,7 +2097,7 @@ namespace zVirtualDesktop
 
         private void lblGithub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/mzomparelli/zVirtualDesktop");
+            System.Diagnostics.Process.Start("https://github.com/mzomparelli/dnVirtualDesktop");
         }
 
         private void lblEasterEgg_Click(object sender, EventArgs e)

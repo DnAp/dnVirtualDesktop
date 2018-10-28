@@ -7,8 +7,8 @@
     <ProjectGuid>{58E2CC1A-B2D0-4B18-B893-B1848E58A337}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>zVirtualDesktop</RootNamespace>
-    <AssemblyName>zVirtualDesktop</AssemblyName>
+    <RootNamespace>dnVirtualDesktop</RootNamespace>
+    <AssemblyName>dnVirtualDesktop</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -178,7 +178,7 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="bin\Release\zVirtualDesktop.zip" />
+    <None Include="bin\Release\dnVirtualDesktop.zip" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

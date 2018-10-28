@@ -1,4 +1,4 @@
-﻿namespace zVirtualDesktop
+﻿namespace dnVirtualDesktop
 {
     partial class frmHotKey
     {

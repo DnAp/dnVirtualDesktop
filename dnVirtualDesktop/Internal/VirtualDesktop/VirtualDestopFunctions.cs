@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsDesktop;
 
-namespace zVirtualDesktop
+namespace dnVirtualDesktop
 {
     public static class VirtualDestopFunctions
     {

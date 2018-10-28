@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace zVirtualDesktop
+namespace dnVirtualDesktop
 {
     public static class Log
     {
@@ -25,7 +25,7 @@ namespace zVirtualDesktop
             {
                 string computerInfo = "Operating System: " + System.Environment.OSVersion;
 
-                AddEventToDatabase("zVirtualDesktop", Program.version, DateTime.Now, eventName, eventDetails, additionalDetails, moduleName, e, 1, SystemInformation.UserName,
+                AddEventToDatabase("dnVirtualDesktop", Program.version, DateTime.Now, eventName, eventDetails, additionalDetails, moduleName, e, 1, SystemInformation.UserName,
                 SystemInformation.ComputerName, computerInfo);
                 
 

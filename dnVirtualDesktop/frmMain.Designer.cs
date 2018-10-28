@@ -1,4 +1,4 @@
-﻿namespace zVirtualDesktop
+﻿namespace dnVirtualDesktop
 {
     partial class frmMain
     {
@@ -229,7 +229,7 @@
             // 
             this.SystemTray.ContextMenuStrip = this.SystemTrayMenu;
             this.SystemTray.Icon = ((System.Drawing.Icon)(resources.GetObject("SystemTray.Icon")));
-            this.SystemTray.Text = "zVirtualDesktop";
+            this.SystemTray.Text = "dnVirtualDesktop";
             this.SystemTray.Visible = true;
             this.SystemTray.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SystemTray_MouseClick);
             this.SystemTray.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SystemTray_MouseDoubleClick);
@@ -313,7 +313,7 @@
             this.mnuGithub.Image = ((System.Drawing.Image)(resources.GetObject("mnuGithub.Image")));
             this.mnuGithub.Name = "mnuGithub";
             this.mnuGithub.Size = new System.Drawing.Size(207, 30);
-            this.mnuGithub.Text = "GitHub zVirtualDesktop";
+            this.mnuGithub.Text = "GitHub dnVirtualDesktop";
             // 
             // toolStripSeparator1
             // 
@@ -1045,7 +1045,7 @@
             // 
             // picMax
             // 
-            this.picMax.Image = global::zVirtualDesktop.Properties.Resources.Max;
+            this.picMax.Image = global::dnVirtualDesktop.Properties.Resources.Max;
             this.picMax.Location = new System.Drawing.Point(72, 56);
             this.picMax.Margin = new System.Windows.Forms.Padding(2);
             this.picMax.Name = "picMax";
@@ -1151,7 +1151,7 @@
             this.lblGithub.Size = new System.Drawing.Size(189, 13);
             this.lblGithub.TabIndex = 15;
             this.lblGithub.TabStop = true;
-            this.lblGithub.Text = "GitHub - zVirtualDesktop - MZomparelli";
+            this.lblGithub.Text = "GitHub - dnVirtualDesktop - MZomparelli";
             // 
             // frmMain
             // 
@@ -1170,7 +1170,7 @@
             this.MaximizeBox = false;
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "zVirtualDesktop Settings";
+            this.Text = "dnVirtualDesktop Settings";
             this.SystemTrayMenu.ResumeLayout(false);
             this.tabs.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);

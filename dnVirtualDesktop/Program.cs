@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsDesktop;
 
-namespace zVirtualDesktop
+namespace dnVirtualDesktop
 {
     static class Program
     {
@@ -26,7 +26,7 @@ namespace zVirtualDesktop
             //Add Excluded windows
             ExcludedWindowCaptions.Add("ASUS_Check");
             ExcludedWindowCaptions.Add("NVIDIA GeForce Overlay");
-            ExcludedWindowCaptions.Add("zVirtualDesktop Settings");
+            ExcludedWindowCaptions.Add("dnVirtualDesktop Settings");
 
             //Run the main form
             Application.Run(MainForm = new frmMain());
@@ -88,12 +88,12 @@ namespace zVirtualDesktop
             string latestversion = GetCurrentVersion();
             if (latestversion != "" && latestversion != version)
             {
-                DialogResult result = MessageBox.Show("zVirtualDesktop " + latestversion + " is available.\r\n" +
+                DialogResult result = MessageBox.Show("dnVirtualDesktop " + latestversion + " is available.\r\n" +
                     "You are currently running version "+ version + "\r\n" + 
-                    "Would you like to download it now?", "zVirtualDesktop", MessageBoxButtons.YesNo);
+                    "Would you like to download it now?", "dnVirtualDesktop", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    System.Diagnostics.Process.Start("https://github.com/mzomparelli/zVirtualDesktop/blob/master/zVirtualDesktop/bin/Release/zVirtualDesktop.zip?raw=true");
+                    System.Diagnostics.Process.Start("https://github.com/mzomparelli/dnVirtualDesktop/blob/master/dnVirtualDesktop/bin/Release/dnVirtualDesktop.zip?raw=true");
                     Environment.Exit(0);
                 }
             }

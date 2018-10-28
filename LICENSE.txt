@@ -1,6 +1,5 @@
-Copyright (c) 2017 Michael Zomparelli
-zVirtualDesktop
-https://github.com/mzomparelli/zVirtualDesktop
+dnVirtualDesktop
+https://github.com/DnAp/dnVirtualDesktop
 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,4 +26,5 @@ SOFTWARE.
 
 
 Wrapper for API to Virtual Desktop on Windows 10.
-Copyright (c) 2015 Manato KAMEYA
+2015-2017 Manato KAMEYA
+2018 DnAp

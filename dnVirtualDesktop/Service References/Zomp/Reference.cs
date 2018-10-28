@@ -8,54 +8,54 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace zVirtualDesktop.Zomp {
+namespace dnVirtualDesktop.Zomp {
     using System.Runtime.Serialization;
     using System;
     
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="EventData", Namespace="http://schemas.datacontract.org/2004/07/zomp.co_WebService")]
-    [System.SerializableAttribute()]
+    [DataContract(Name="EventData", Namespace="http://schemas.datacontract.org/2004/07/zomp.co_WebService")]
+    [Serializable()]
     public partial class EventData : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
-        [System.NonSerializedAttribute()]
+        [NonSerialized()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string AdditionalDetailsField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string ApplicationNameField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string ApplicationVersionField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string CallingMethodField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string ComputerInfoField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string ComputerNameField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private System.DateTime EventDateTimeField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string EventDetailsField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string EventNameField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string ExceptionField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string ModuleNameField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string UsernameField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
@@ -68,7 +68,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string AdditionalDetails {
             get {
                 return this.AdditionalDetailsField;
@@ -81,7 +81,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string ApplicationName {
             get {
                 return this.ApplicationNameField;
@@ -94,7 +94,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string ApplicationVersion {
             get {
                 return this.ApplicationVersionField;
@@ -107,7 +107,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string CallingMethod {
             get {
                 return this.CallingMethodField;
@@ -120,7 +120,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string ComputerInfo {
             get {
                 return this.ComputerInfoField;
@@ -133,7 +133,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string ComputerName {
             get {
                 return this.ComputerNameField;
@@ -146,7 +146,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public System.DateTime EventDateTime {
             get {
                 return this.EventDateTimeField;
@@ -159,7 +159,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string EventDetails {
             get {
                 return this.EventDetailsField;
@@ -172,7 +172,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string EventName {
             get {
                 return this.EventNameField;
@@ -185,7 +185,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string Exception {
             get {
                 return this.ExceptionField;
@@ -198,7 +198,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string ModuleName {
             get {
                 return this.ModuleNameField;
@@ -211,7 +211,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string Username {
             get {
                 return this.UsernameField;
@@ -236,38 +236,38 @@ namespace zVirtualDesktop.Zomp {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="EmailData", Namespace="http://schemas.datacontract.org/2004/07/zomp.co_WebService")]
-    [System.SerializableAttribute()]
+    [DataContract(Name="EmailData", Namespace="http://schemas.datacontract.org/2004/07/zomp.co_WebService")]
+    [Serializable()]
     public partial class EmailData : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
-        [System.NonSerializedAttribute()]
+        [NonSerialized()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string AttachmentIDField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string[] BCCField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string BodyField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string[] CCField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string FromEmailField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private System.Net.Mail.LinkedResource[] LinkedResources1Field;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string PasswordField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string SubjectField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        [OptionalField()]
         private string[] ToEmailField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
@@ -280,7 +280,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string AttachmentID {
             get {
                 return this.AttachmentIDField;
@@ -293,7 +293,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string[] BCC {
             get {
                 return this.BCCField;
@@ -306,7 +306,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string Body {
             get {
                 return this.BodyField;
@@ -319,7 +319,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string[] CC {
             get {
                 return this.CCField;
@@ -332,7 +332,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string FromEmail {
             get {
                 return this.FromEmailField;
@@ -345,7 +345,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public System.Net.Mail.LinkedResource[] LinkedResources1 {
             get {
                 return this.LinkedResources1Field;
@@ -358,7 +358,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string Password {
             get {
                 return this.PasswordField;
@@ -371,7 +371,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string Subject {
             get {
                 return this.SubjectField;
@@ -384,7 +384,7 @@ namespace zVirtualDesktop.Zomp {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [DataMember()]
         public string[] ToEmail {
             get {
                 return this.ToEmailField;
@@ -424,16 +424,16 @@ namespace zVirtualDesktop.Zomp {
         System.Threading.Tasks.Task<string> GetNextEmailCommandAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/AddEventToDatabase", ReplyAction="http://tempuri.org/IService/AddEventToDatabaseResponse")]
-        string AddEventToDatabase(zVirtualDesktop.Zomp.EventData theEvent);
+        string AddEventToDatabase(EventData theEvent);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/AddEventToDatabase", ReplyAction="http://tempuri.org/IService/AddEventToDatabaseResponse")]
-        System.Threading.Tasks.Task<string> AddEventToDatabaseAsync(zVirtualDesktop.Zomp.EventData theEvent);
+        System.Threading.Tasks.Task<string> AddEventToDatabaseAsync(EventData theEvent);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/SendEmail", ReplyAction="http://tempuri.org/IService/SendEmailResponse")]
-        void SendEmail(zVirtualDesktop.Zomp.EmailData d);
+        void SendEmail(EmailData d);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/SendEmail", ReplyAction="http://tempuri.org/IService/SendEmailResponse")]
-        System.Threading.Tasks.Task SendEmailAsync(zVirtualDesktop.Zomp.EmailData d);
+        System.Threading.Tasks.Task SendEmailAsync(EmailData d);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/zVD_CurrentVersion", ReplyAction="http://tempuri.org/IService/zVD_CurrentVersionResponse")]
         string zVD_CurrentVersion();
@@ -443,12 +443,12 @@ namespace zVirtualDesktop.Zomp {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IServiceChannel : zVirtualDesktop.Zomp.IService, System.ServiceModel.IClientChannel {
+    public interface IServiceChannel : IService, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class ServiceClient : System.ServiceModel.ClientBase<zVirtualDesktop.Zomp.IService>, zVirtualDesktop.Zomp.IService {
+    public partial class ServiceClient : System.ServiceModel.ClientBase<IService>, IService {
         
         public ServiceClient() {
         }
@@ -485,19 +485,19 @@ namespace zVirtualDesktop.Zomp {
             return base.Channel.GetNextEmailCommandAsync();
         }
         
-        public string AddEventToDatabase(zVirtualDesktop.Zomp.EventData theEvent) {
+        public string AddEventToDatabase(EventData theEvent) {
             return base.Channel.AddEventToDatabase(theEvent);
         }
         
-        public System.Threading.Tasks.Task<string> AddEventToDatabaseAsync(zVirtualDesktop.Zomp.EventData theEvent) {
+        public System.Threading.Tasks.Task<string> AddEventToDatabaseAsync(EventData theEvent) {
             return base.Channel.AddEventToDatabaseAsync(theEvent);
         }
         
-        public void SendEmail(zVirtualDesktop.Zomp.EmailData d) {
+        public void SendEmail(EmailData d) {
             base.Channel.SendEmail(d);
         }
         
-        public System.Threading.Tasks.Task SendEmailAsync(zVirtualDesktop.Zomp.EmailData d) {
+        public System.Threading.Tasks.Task SendEmailAsync(EmailData d) {
             return base.Channel.SendEmailAsync(d);
         }
         
