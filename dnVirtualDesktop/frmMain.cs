@@ -1,29 +1,34 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
+using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 using WindowsDesktop;
 using WindowsInput;
 using WindowsInput.Native;
 using dnVirtualDesktop.Internal;
+using dnVirtualDesktop.Internal.Hook;
+using dnVirtualDesktop.Properties;
+using Timer = System.Windows.Forms.Timer;
 
 namespace dnVirtualDesktop
 {
     public partial class frmMain : Form
-    { 
-        private bool ExitClicked = false;
+    {
+        private bool ExitClicked;
         public Timer timerCheckVersion = new Timer();
+
+        public readonly KeyboardHook KeyboardHook;
 
         public frmMain()
         {
+            KeyboardHook = new KeyboardHook();
             InitializeComponent();
             //foreach(VirtualDesktop d in VirtualDesktop.GetDesktops())
             //{
@@ -31,8 +36,8 @@ namespace dnVirtualDesktop
             //}
             Log.LogEvent("Program Started", "", "", "", null);
             //Wire up some events
-            this.Closing += frmMain_Closing;
-            this.Load += frmMain_Load;
+            Closing += frmMain_Closing;
+            Load += frmMain_Load;
             mnuExit.Click += mnuExit_Click;
             mnuSettings.Click += mnuSettings_Click;
             lblGithub.LinkClicked += lblGithub_LinkClicked;
@@ -57,8 +62,6 @@ namespace dnVirtualDesktop
             //This is used so that the app is able to pin an application
             //System.Threading.Thread tGetProgs = new System.Threading.Thread(new System.Threading.ThreadStart(GetProgs));
             //tGetProgs.Start();
-
-
         }
 
         private static void GetProgs()
@@ -85,7 +88,7 @@ namespace dnVirtualDesktop
 
             //    regClsidKey.Close();
             //}
-        }       
+        }
 
         #region "Event Handlers"
 
@@ -93,8 +96,8 @@ namespace dnVirtualDesktop
         {
             try
             {
-                this.Opacity = 0;
-                this.ShowInTaskbar = false;
+                Opacity = 0;
+                ShowInTaskbar = false;
                 LoadSettings();
                 SetSystemTrayIcon();
                 ////Make sure there are at least 9 desktops.
@@ -106,13 +109,11 @@ namespace dnVirtualDesktop
                 timerCheckVersion.Tick += timerCheckVersion_Tick;
                 timerCheckVersion.Interval = 600000; //10 minutes
                 timerCheckVersion.Start();
-
             }
             catch (Exception ex)
             {
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
-
         }
 
         private void VirtualDesktop_ApplicationViewChanged(object sender, EventArgs e)
@@ -136,24 +137,21 @@ namespace dnVirtualDesktop
                     e.Cancel = true;
                     HideSettings();
                 }
-
             }
+
             SystemTray.Visible = false;
             Log.LogEvent("Program Exited", "Icon Theme: " + Program.IconTheme +
-                            "\r\nPin Count: " + Program.PinCount +
-                            "\r\nMove Count: " + Program.MoveCount +
-                            "\r\nNavigateCount: " + Program.NavigateCount, "", "frmMain", null);
-            System.Threading.Thread.Sleep(3000);
+                                           "\r\nPin Count: " + Program.PinCount +
+                                           "\r\nMove Count: " + Program.MoveCount +
+                                           "\r\nNavigateCount: " + Program.NavigateCount, "", "frmMain", null);
+            Thread.Sleep(3000);
             Environment.Exit(0);
-
         }
 
         private void timerCheckVersion_Tick(object sender, EventArgs e)
         {
             Program.CheckVersion();
         }
-
-
 
         #endregion
 
@@ -168,12 +166,11 @@ namespace dnVirtualDesktop
                     var sim = new InputSimulator();
                     sim.Keyboard.ModifiedKeyStroke(VirtualKeyCode.LWIN, VirtualKeyCode.TAB);
                     sim = null;
-
                 }
-                catch { }
-
+                catch
+                {
+                }
             }
-
         }
 
         private void SystemTray_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -186,8 +183,9 @@ namespace dnVirtualDesktop
                     sim.Keyboard.ModifiedKeyStroke(VirtualKeyCode.LWIN, VirtualKeyCode.VK_D);
                     sim = null;
                 }
-                catch { }
-
+                catch
+                {
+                }
             }
         }
 
@@ -198,7 +196,7 @@ namespace dnVirtualDesktop
 
         private void mnuGithub_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/mzomparelli/dnVirtualDesktop");
+            Process.Start("https://github.com/dnap/dnVirtualDesktop");
         }
 
         private void mnuGatherWindows_Click(object sender, EventArgs e)
@@ -210,7 +208,7 @@ namespace dnVirtualDesktop
                     IntPtr hWnd = window.Key;
                     string title = window.Value;
                     Window win = new Window(hWnd);
-                    if(win.DesktopNumber != VirtualDestopFunctions.GetCurrentDesktopNumber() && win.IsDesktop == false)
+                    if (win.DesktopNumber != VirtualDestopFunctions.GetCurrentDesktopNumber() && win.IsDesktop == false)
                     {
                         win.MoveToDesktop(VirtualDestopFunctions.GetCurrentDesktopNumber());
                     }
@@ -220,13 +218,12 @@ namespace dnVirtualDesktop
             {
                 //MessageBox.Show(ex.Message);
             }
-
         }
 
         private void DesktopMenu_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem mnu = (ToolStripMenuItem)sender;
-            VirtualDestopFunctions.GoToDesktop((int)mnu.Tag);
+            ToolStripMenuItem mnu = (ToolStripMenuItem) sender;
+            VirtualDestopFunctions.GoToDesktop((int) mnu.Tag);
         }
 
         private void mnuExit_Click(object sender, EventArgs e)
@@ -234,15 +231,12 @@ namespace dnVirtualDesktop
             try
             {
                 ExitClicked = true;
-                this.Close();
-
-
+                Close();
             }
             catch (Exception ex)
             {
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
-
         }
 
         private void SystemTrayMenu_Opening(object sender, CancelEventArgs e)
@@ -259,7 +253,7 @@ namespace dnVirtualDesktop
             for (int i = 0; i < Program.Desktops.Count(); i++)
             {
                 ToolStripMenuItem mnu = new ToolStripMenuItem();
-                mnu.Text = "Desktop " + (i + 1).ToString();
+                mnu.Text = "Desktop " + (i + 1);
                 mnu.Tag = i + 1;
                 mnu.Click += DesktopMenu_Click;
                 if (VirtualDestopFunctions.GetDesktopNumber(VirtualDesktop.Current.Id) == i + 1)
@@ -279,7 +273,6 @@ namespace dnVirtualDesktop
 
         public void SetSystemTrayIcon()
         {
-
             switch (Program.IconTheme)
             {
                 case "Green":
@@ -336,43 +329,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.Agency_1;
+                        SystemTray.Icon = Resources.Agency_1;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.Agency_2;
+                        SystemTray.Icon = Resources.Agency_2;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.Agency_3;
+                        SystemTray.Icon = Resources.Agency_3;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.Agency_4;
+                        SystemTray.Icon = Resources.Agency_4;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.Agency_5;
+                        SystemTray.Icon = Resources.Agency_5;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.Agency_6;
+                        SystemTray.Icon = Resources.Agency_6;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.Agency_7;
+                        SystemTray.Icon = Resources.Agency_7;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.Agency_8;
+                        SystemTray.Icon = Resources.Agency_8;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.Agency_9;
+                        SystemTray.Icon = Resources.Agency_9;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.Windows_8_Numbers_1_Black;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.Windows_8_Numbers_1_Black;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -386,43 +379,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.Narrow_1;
+                        SystemTray.Icon = Resources.Narrow_1;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.Narrow_2;
+                        SystemTray.Icon = Resources.Narrow_2;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.Narrow_3;
+                        SystemTray.Icon = Resources.Narrow_3;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.Narrow_4;
+                        SystemTray.Icon = Resources.Narrow_4;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.Narrow_5;
+                        SystemTray.Icon = Resources.Narrow_5;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.Narrow_6;
+                        SystemTray.Icon = Resources.Narrow_6;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.Narrow_7;
+                        SystemTray.Icon = Resources.Narrow_7;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.Narrow_8;
+                        SystemTray.Icon = Resources.Narrow_8;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.Narrow_9;
+                        SystemTray.Icon = Resources.Narrow_9;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.Windows_8_Numbers_1_Black;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.Windows_8_Numbers_1_Black;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -436,43 +429,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_1_Black;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_1_Black;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_2_Black;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_2_Black;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_3_Black;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_3_Black;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_4_Black;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_4_Black;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_5_Black;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_5_Black;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_6_Black;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_6_Black;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_7_Black;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_7_Black;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_8_Black;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_8_Black;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_9_Black;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_9_Black;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.Windows_8_Numbers_1_Black;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.Windows_8_Numbers_1_Black;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -486,43 +479,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources._3Desktops_1;
+                        SystemTray.Icon = Resources._3Desktops_1;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources._3Desktops_2;
+                        SystemTray.Icon = Resources._3Desktops_2;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources._3Desktops_3;
+                        SystemTray.Icon = Resources._3Desktops_3;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources._3Desktops_4;
+                        SystemTray.Icon = Resources._3Desktops_4;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources._3Desktops_4;
+                        SystemTray.Icon = Resources._3Desktops_4;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources._3Desktops_4;
+                        SystemTray.Icon = Resources._3Desktops_4;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources._3Desktops_4;
+                        SystemTray.Icon = Resources._3Desktops_4;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources._3Desktops_4;
+                        SystemTray.Icon = Resources._3Desktops_4;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources._3Desktops_4;
+                        SystemTray.Icon = Resources._3Desktops_4;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.Windows_8_Numbers_1_Black;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.Windows_8_Numbers_1_Black;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -536,43 +529,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.NumPad1_7;
+                        SystemTray.Icon = Resources.NumPad1_7;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.NumPad1_8;
+                        SystemTray.Icon = Resources.NumPad1_8;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.NumPad1_9;
+                        SystemTray.Icon = Resources.NumPad1_9;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.NumPad1_4;
+                        SystemTray.Icon = Resources.NumPad1_4;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.NumPad1_5;
+                        SystemTray.Icon = Resources.NumPad1_5;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.NumPad1_6;
+                        SystemTray.Icon = Resources.NumPad1_6;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.NumPad1_1;
+                        SystemTray.Icon = Resources.NumPad1_1;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.NumPad1_2;
+                        SystemTray.Icon = Resources.NumPad1_2;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.NumPad1_3;
+                        SystemTray.Icon = Resources.NumPad1_3;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.Windows_8_Numbers_1_Black;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.Windows_8_Numbers_1_Black;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -586,43 +579,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.NumPad1_1;
+                        SystemTray.Icon = Resources.NumPad1_1;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.NumPad1_2;
+                        SystemTray.Icon = Resources.NumPad1_2;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.NumPad1_3;
+                        SystemTray.Icon = Resources.NumPad1_3;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.NumPad1_4;
+                        SystemTray.Icon = Resources.NumPad1_4;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.NumPad1_5;
+                        SystemTray.Icon = Resources.NumPad1_5;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.NumPad1_6;
+                        SystemTray.Icon = Resources.NumPad1_6;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.NumPad1_7;
+                        SystemTray.Icon = Resources.NumPad1_7;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.NumPad1_8;
+                        SystemTray.Icon = Resources.NumPad1_8;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.NumPad1_9;
+                        SystemTray.Icon = Resources.NumPad1_9;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.Windows_8_Numbers_1_Black;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.Windows_8_Numbers_1_Black;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -636,43 +629,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.White_Border_Box_1;
+                        SystemTray.Icon = Resources.White_Border_Box_1;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.White_Border_Box_2;
+                        SystemTray.Icon = Resources.White_Border_Box_2;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.White_Border_Box_3;
+                        SystemTray.Icon = Resources.White_Border_Box_3;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.White_Border_Box_4;
+                        SystemTray.Icon = Resources.White_Border_Box_4;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.White_Border_Box_5;
+                        SystemTray.Icon = Resources.White_Border_Box_5;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.White_Border_Box_6;
+                        SystemTray.Icon = Resources.White_Border_Box_6;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.White_Border_Box_7;
+                        SystemTray.Icon = Resources.White_Border_Box_7;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.White_Border_Box_8;
+                        SystemTray.Icon = Resources.White_Border_Box_8;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.White_Border_Box_9;
+                        SystemTray.Icon = Resources.White_Border_Box_9;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.Windows_8_Numbers_1_Black;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.Windows_8_Numbers_1_Black;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -686,43 +679,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_1;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_1;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_2;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_2;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_3;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_3;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_4;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_4;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_5;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_5;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_6;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_6;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_7;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_7;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_8;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_8;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.Windows_8_Numbers_9;
+                        SystemTray.Icon = Resources.Windows_8_Numbers_9;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.Windows_8_Numbers_1;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.Windows_8_Numbers_1;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -736,43 +729,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.Red_Orb_Alphabet_Number_1;
+                        SystemTray.Icon = Resources.Red_Orb_Alphabet_Number_1;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.Red_Orb_Alphabet_Number_2;
+                        SystemTray.Icon = Resources.Red_Orb_Alphabet_Number_2;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.Red_Orb_Alphabet_Number_3;
+                        SystemTray.Icon = Resources.Red_Orb_Alphabet_Number_3;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.Red_Orb_Alphabet_Number_4;
+                        SystemTray.Icon = Resources.Red_Orb_Alphabet_Number_4;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.Red_Orb_Alphabet_Number_5;
+                        SystemTray.Icon = Resources.Red_Orb_Alphabet_Number_5;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.Red_Orb_Alphabet_Number_6;
+                        SystemTray.Icon = Resources.Red_Orb_Alphabet_Number_6;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.Red_Orb_Alphabet_Number_7;
+                        SystemTray.Icon = Resources.Red_Orb_Alphabet_Number_7;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.Red_Orb_Alphabet_Number_8;
+                        SystemTray.Icon = Resources.Red_Orb_Alphabet_Number_8;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.Red_Orb_Alphabet_Number_9;
+                        SystemTray.Icon = Resources.Red_Orb_Alphabet_Number_9;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.Red_Orb_Alphabet_Number_1;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.Red_Orb_Alphabet_Number_1;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -786,43 +779,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.st_1;
+                        SystemTray.Icon = Resources.st_1;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.st_2;
+                        SystemTray.Icon = Resources.st_2;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.st_3;
+                        SystemTray.Icon = Resources.st_3;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.st_4;
+                        SystemTray.Icon = Resources.st_4;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.st_5;
+                        SystemTray.Icon = Resources.st_5;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.st_6;
+                        SystemTray.Icon = Resources.st_6;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.st_7;
+                        SystemTray.Icon = Resources.st_7;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.st_8;
+                        SystemTray.Icon = Resources.st_8;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.st_9;
+                        SystemTray.Icon = Resources.st_9;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.st_1;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.st_1;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -836,43 +829,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.white_digital_1;
+                        SystemTray.Icon = Resources.white_digital_1;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.white_digital_2;
+                        SystemTray.Icon = Resources.white_digital_2;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.white_digital_3;
+                        SystemTray.Icon = Resources.white_digital_3;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.white_digital_4;
+                        SystemTray.Icon = Resources.white_digital_4;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.white_digital_5;
+                        SystemTray.Icon = Resources.white_digital_5;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.white_digital_6;
+                        SystemTray.Icon = Resources.white_digital_6;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.white_digital_7;
+                        SystemTray.Icon = Resources.white_digital_7;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.white_digital_8;
+                        SystemTray.Icon = Resources.white_digital_8;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.white_digital_9;
+                        SystemTray.Icon = Resources.white_digital_9;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.st_1;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.st_1;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -886,43 +879,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.number_1_blue;
+                        SystemTray.Icon = Resources.number_1_blue;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.number_2_blue;
+                        SystemTray.Icon = Resources.number_2_blue;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.number_3_blue;
+                        SystemTray.Icon = Resources.number_3_blue;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.number_4_blue;
+                        SystemTray.Icon = Resources.number_4_blue;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.number_5_blue;
+                        SystemTray.Icon = Resources.number_5_blue;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.number_6_blue;
+                        SystemTray.Icon = Resources.number_6_blue;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.number_7_blue;
+                        SystemTray.Icon = Resources.number_7_blue;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.number_8_blue;
+                        SystemTray.Icon = Resources.number_8_blue;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.number_9_blue;
+                        SystemTray.Icon = Resources.number_9_blue;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.number_1_blue;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.number_1_blue;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -936,43 +929,43 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.number_1_green;
+                        SystemTray.Icon = Resources.number_1_green;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.number_2_green;
+                        SystemTray.Icon = Resources.number_2_green;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.number_3_green;
+                        SystemTray.Icon = Resources.number_3_green;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.number_4_green;
+                        SystemTray.Icon = Resources.number_4_green;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.number_5_green;
+                        SystemTray.Icon = Resources.number_5_green;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.number_6_green;
+                        SystemTray.Icon = Resources.number_6_green;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.number_7_green;
+                        SystemTray.Icon = Resources.number_7_green;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.number_8_green;
+                        SystemTray.Icon = Resources.number_8_green;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.number_9_green;
+                        SystemTray.Icon = Resources.number_9_green;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.number_1_green;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.number_1_green;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -986,52 +979,53 @@ namespace dnVirtualDesktop
                 switch (i)
                 {
                     case 1:
-                        SystemTray.Icon = Properties.Resources.number_one;
+                        SystemTray.Icon = Resources.number_one;
                         break;
                     case 2:
-                        SystemTray.Icon = Properties.Resources.number_two;
+                        SystemTray.Icon = Resources.number_two;
                         break;
                     case 3:
-                        SystemTray.Icon = Properties.Resources.number_three;
+                        SystemTray.Icon = Resources.number_three;
                         break;
                     case 4:
-                        SystemTray.Icon = Properties.Resources.number_four;
+                        SystemTray.Icon = Resources.number_four;
                         break;
                     case 5:
-                        SystemTray.Icon = Properties.Resources.number_five;
+                        SystemTray.Icon = Resources.number_five;
                         break;
                     case 6:
-                        SystemTray.Icon = Properties.Resources.number_six;
+                        SystemTray.Icon = Resources.number_six;
                         break;
                     case 7:
-                        SystemTray.Icon = Properties.Resources.number_seven;
+                        SystemTray.Icon = Resources.number_seven;
                         break;
                     case 8:
-                        SystemTray.Icon = Properties.Resources.number_eight;
+                        SystemTray.Icon = Resources.number_eight;
                         break;
                     case 9:
-                        SystemTray.Icon = Properties.Resources.number_nine;
+                        SystemTray.Icon = Resources.number_nine;
                         break;
                 }
 
                 SystemTray.Visible = true;
-
             }
             catch (Exception ex)
             {
-                SystemTray.Icon = Properties.Resources.number_1_green;
-                MessageBox.Show("An error occured setting the system tray icon. See additional details below." + Environment.NewLine + Environment.NewLine +
-                    ex.Message + Environment.NewLine +
-                    ex.Source + "::" + ex.TargetSite.Name);
+                SystemTray.Icon = Resources.number_1_green;
+                MessageBox.Show("An error occured setting the system tray icon. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
 
         #endregion
 
-        #endregion        
+        #endregion
 
         #region "Wallpaper"
+
         private Wallpaper.Style GetWallpaperStyle(string desktop)
         {
             switch (desktop)
@@ -1040,7 +1034,8 @@ namespace dnVirtualDesktop
                     if (Program.WallpaperStyles[1] == "")
                     {
                         return Wallpaper.Style.Centered;
-                    } else
+                    }
+                    else
                     {
                         switch (Program.WallpaperStyles[1])
                         {
@@ -1054,6 +1049,7 @@ namespace dnVirtualDesktop
                                 return Wallpaper.Style.Centered;
                         }
                     }
+
                     break;
                 case "2":
                     if (Program.WallpaperStyles[2] == "")
@@ -1074,6 +1070,7 @@ namespace dnVirtualDesktop
                                 return Wallpaper.Style.Centered;
                         }
                     }
+
                     break;
                 case "3":
                     if (Program.WallpaperStyles[3] == "")
@@ -1094,6 +1091,7 @@ namespace dnVirtualDesktop
                                 return Wallpaper.Style.Centered;
                         }
                     }
+
                     break;
                 case "4":
                     if (Program.WallpaperStyles[4] == "")
@@ -1114,6 +1112,7 @@ namespace dnVirtualDesktop
                                 return Wallpaper.Style.Centered;
                         }
                     }
+
                     break;
                 case "5":
                     if (Program.WallpaperStyles[5] == "")
@@ -1134,6 +1133,7 @@ namespace dnVirtualDesktop
                                 return Wallpaper.Style.Centered;
                         }
                     }
+
                     break;
                 case "6":
                     if (Program.WallpaperStyles[6] == "")
@@ -1154,6 +1154,7 @@ namespace dnVirtualDesktop
                                 return Wallpaper.Style.Centered;
                         }
                     }
+
                     break;
                 case "7":
                     if (Program.WallpaperStyles[7] == "")
@@ -1174,6 +1175,7 @@ namespace dnVirtualDesktop
                                 return Wallpaper.Style.Centered;
                         }
                     }
+
                     break;
                 case "8":
                     if (Program.WallpaperStyles[8] == "")
@@ -1194,6 +1196,7 @@ namespace dnVirtualDesktop
                                 return Wallpaper.Style.Centered;
                         }
                     }
+
                     break;
                 case "9":
                     if (Program.WallpaperStyles[9] == "")
@@ -1214,6 +1217,7 @@ namespace dnVirtualDesktop
                                 return Wallpaper.Style.Centered;
                         }
                     }
+
                     break;
                 case "default":
                     if (Program.WallpaperStyles[0] == "")
@@ -1234,6 +1238,7 @@ namespace dnVirtualDesktop
                                 return Wallpaper.Style.Centered;
                         }
                     }
+
                     break;
                 default:
                     if (Program.WallpaperStyles[0] == "")
@@ -1254,6 +1259,7 @@ namespace dnVirtualDesktop
                                 return Wallpaper.Style.Centered;
                         }
                     }
+
                     break;
             }
         }
@@ -1265,119 +1271,130 @@ namespace dnVirtualDesktop
             switch (i)
             {
                 case 1:
-                    if (txtWallpaper1.Text != "" && System.IO.File.Exists(txtWallpaper1.Text))
+                    if (txtWallpaper1.Text != "" && File.Exists(txtWallpaper1.Text))
                     {
-                        Wallpaper.Set(new System.Uri(txtWallpaper1.Text), GetWallpaperStyle("1"));
-                    } else {
-                        if (txtDefaultWallpaper.Text != "" && System.IO.File.Exists(txtDefaultWallpaper.Text))
+                        Wallpaper.Set(new Uri(txtWallpaper1.Text), GetWallpaperStyle("1"));
+                    }
+                    else
+                    {
+                        if (txtDefaultWallpaper.Text != "" && File.Exists(txtDefaultWallpaper.Text))
                         {
-                            Wallpaper.Set(new System.Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
+                            Wallpaper.Set(new Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
                         }
                     }
+
                     break;
                 case 2:
-                    if (txtWallpaper2.Text != "" && System.IO.File.Exists(txtWallpaper2.Text))
+                    if (txtWallpaper2.Text != "" && File.Exists(txtWallpaper2.Text))
                     {
-                        Wallpaper.Set(new System.Uri(txtWallpaper2.Text), GetWallpaperStyle("2"));
+                        Wallpaper.Set(new Uri(txtWallpaper2.Text), GetWallpaperStyle("2"));
                     }
                     else
                     {
-                        if (txtDefaultWallpaper.Text != "" && System.IO.File.Exists(txtDefaultWallpaper.Text))
+                        if (txtDefaultWallpaper.Text != "" && File.Exists(txtDefaultWallpaper.Text))
                         {
-                            Wallpaper.Set(new System.Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
+                            Wallpaper.Set(new Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
                         }
                     }
+
                     break;
                 case 3:
-                    if (txtWallpaper3.Text != "" && System.IO.File.Exists(txtWallpaper3.Text))
+                    if (txtWallpaper3.Text != "" && File.Exists(txtWallpaper3.Text))
                     {
-                        Wallpaper.Set(new System.Uri(txtWallpaper3.Text), GetWallpaperStyle("3"));
+                        Wallpaper.Set(new Uri(txtWallpaper3.Text), GetWallpaperStyle("3"));
                     }
                     else
                     {
-                        if (txtDefaultWallpaper.Text != "" && System.IO.File.Exists(txtDefaultWallpaper.Text))
+                        if (txtDefaultWallpaper.Text != "" && File.Exists(txtDefaultWallpaper.Text))
                         {
-                            Wallpaper.Set(new System.Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
+                            Wallpaper.Set(new Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
                         }
                     }
+
                     break;
                 case 4:
-                    if (txtWallpaper4.Text != "" && System.IO.File.Exists(txtWallpaper4.Text))
+                    if (txtWallpaper4.Text != "" && File.Exists(txtWallpaper4.Text))
                     {
-                        Wallpaper.Set(new System.Uri(txtWallpaper4.Text), GetWallpaperStyle("4"));
+                        Wallpaper.Set(new Uri(txtWallpaper4.Text), GetWallpaperStyle("4"));
                     }
                     else
                     {
-                        if (txtDefaultWallpaper.Text != "" && System.IO.File.Exists(txtDefaultWallpaper.Text))
+                        if (txtDefaultWallpaper.Text != "" && File.Exists(txtDefaultWallpaper.Text))
                         {
-                            Wallpaper.Set(new System.Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
+                            Wallpaper.Set(new Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
                         }
                     }
+
                     break;
                 case 5:
-                    if (txtWallpaper5.Text != "" && System.IO.File.Exists(txtWallpaper5.Text))
+                    if (txtWallpaper5.Text != "" && File.Exists(txtWallpaper5.Text))
                     {
-                        Wallpaper.Set(new System.Uri(txtWallpaper5.Text), GetWallpaperStyle("5"));
+                        Wallpaper.Set(new Uri(txtWallpaper5.Text), GetWallpaperStyle("5"));
                     }
                     else
                     {
-                        if (txtDefaultWallpaper.Text != "" && System.IO.File.Exists(txtDefaultWallpaper.Text))
+                        if (txtDefaultWallpaper.Text != "" && File.Exists(txtDefaultWallpaper.Text))
                         {
-                            Wallpaper.Set(new System.Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
+                            Wallpaper.Set(new Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
                         }
                     }
+
                     break;
                 case 6:
-                    if (txtWallpaper6.Text != "" && System.IO.File.Exists(txtWallpaper6.Text))
+                    if (txtWallpaper6.Text != "" && File.Exists(txtWallpaper6.Text))
                     {
-                        Wallpaper.Set(new System.Uri(txtWallpaper6.Text), GetWallpaperStyle("6"));
+                        Wallpaper.Set(new Uri(txtWallpaper6.Text), GetWallpaperStyle("6"));
                     }
                     else
                     {
-                        if (txtDefaultWallpaper.Text != "" && System.IO.File.Exists(txtDefaultWallpaper.Text))
+                        if (txtDefaultWallpaper.Text != "" && File.Exists(txtDefaultWallpaper.Text))
                         {
-                            Wallpaper.Set(new System.Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
+                            Wallpaper.Set(new Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
                         }
                     }
+
                     break;
                 case 7:
-                    if (txtWallpaper7.Text != "" && System.IO.File.Exists(txtWallpaper7.Text))
+                    if (txtWallpaper7.Text != "" && File.Exists(txtWallpaper7.Text))
                     {
-                        Wallpaper.Set(new System.Uri(txtWallpaper7.Text), GetWallpaperStyle("7"));
+                        Wallpaper.Set(new Uri(txtWallpaper7.Text), GetWallpaperStyle("7"));
                     }
                     else
                     {
-                        if (txtDefaultWallpaper.Text != "" && System.IO.File.Exists(txtDefaultWallpaper.Text))
+                        if (txtDefaultWallpaper.Text != "" && File.Exists(txtDefaultWallpaper.Text))
                         {
-                            Wallpaper.Set(new System.Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
+                            Wallpaper.Set(new Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
                         }
                     }
+
                     break;
                 case 8:
-                    if (txtWallpaper8.Text != "" && System.IO.File.Exists(txtWallpaper8.Text))
+                    if (txtWallpaper8.Text != "" && File.Exists(txtWallpaper8.Text))
                     {
-                        Wallpaper.Set(new System.Uri(txtWallpaper8.Text), GetWallpaperStyle("8"));
+                        Wallpaper.Set(new Uri(txtWallpaper8.Text), GetWallpaperStyle("8"));
                     }
                     else
                     {
-                        if (txtDefaultWallpaper.Text != "" && System.IO.File.Exists(txtDefaultWallpaper.Text))
+                        if (txtDefaultWallpaper.Text != "" && File.Exists(txtDefaultWallpaper.Text))
                         {
-                            Wallpaper.Set(new System.Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
+                            Wallpaper.Set(new Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
                         }
                     }
+
                     break;
                 case 9:
-                    if (txtWallpaper9.Text != "" && System.IO.File.Exists(txtWallpaper9.Text))
+                    if (txtWallpaper9.Text != "" && File.Exists(txtWallpaper9.Text))
                     {
-                        Wallpaper.Set(new System.Uri(txtWallpaper9.Text), GetWallpaperStyle("9"));
+                        Wallpaper.Set(new Uri(txtWallpaper9.Text), GetWallpaperStyle("9"));
                     }
                     else
                     {
-                        if (txtDefaultWallpaper.Text != "" && System.IO.File.Exists(txtDefaultWallpaper.Text))
+                        if (txtDefaultWallpaper.Text != "" && File.Exists(txtDefaultWallpaper.Text))
                         {
-                            Wallpaper.Set(new System.Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
+                            Wallpaper.Set(new Uri(txtDefaultWallpaper.Text), GetWallpaperStyle("default"));
                         }
                     }
+
                     break;
             }
         }
@@ -1385,7 +1402,6 @@ namespace dnVirtualDesktop
         #endregion
 
         #region "Settings"
-
 
         private void CreateDefaultHotkeys()
         {
@@ -1405,9 +1421,11 @@ namespace dnVirtualDesktop
             HotkeyItem hkiPinWindow = new HotkeyItem("Pin/Unpin Window", keyPinWindow);
             HotkeyItem hkiPinApp = new HotkeyItem("Pin/Unpin Application", keyPinApp);
 
-            Program.hotkeys.AddRange(new HotkeyItem[] {
-                             hkiMoveNext, hkiMoveNextFollow, hkiMovePrevious, hkiMovePreviousFollow,
-                             hkiPinWindow, hkiPinApp });
+            Program.hotkeys.AddRange(new[]
+            {
+                hkiMoveNext, hkiMoveNextFollow, hkiMovePrevious, hkiMovePreviousFollow,
+                hkiPinWindow, hkiPinApp
+            });
 
             keyMoveNext.HotkeyActivated += VirtualDestopFunctions.DesktopMoveNext;
             keyMoveNext.Register(Keys.Right, true, false, false, true);
@@ -1427,8 +1445,6 @@ namespace dnVirtualDesktop
 
             keyPinApp.HotkeyActivated += VirtualDestopFunctions.PinApp;
             keyPinApp.Register(Keys.A, true, false, false, true);
-
-
         }
 
         private void CreateDefaultHotkeys_Numpad()
@@ -1493,10 +1509,14 @@ namespace dnVirtualDesktop
             HotkeyItem hkiMoveFollowTo08 = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo08);
             HotkeyItem hkiMoveFollowTo09 = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo09);
 
-            Program.hotkeys.AddRange(new HotkeyItem[] {
-                             hkiGoTo01, hkiGoTo02, hkiGoTo03, hkiGoTo04, hkiGoTo05, hkiGoTo06, hkiGoTo07, hkiGoTo08, hkiGoTo09,
-                             hkiMoveTo01, hkiMoveTo02, hkiMoveTo03, hkiMoveTo04, hkiMoveTo05, hkiMoveTo06, hkiMoveTo07, hkiMoveTo08, hkiMoveTo09,
-                             hkiMoveFollowTo01, hkiMoveFollowTo02, hkiMoveFollowTo03, hkiMoveFollowTo04, hkiMoveFollowTo05, hkiMoveFollowTo06, hkiMoveFollowTo07, hkiMoveFollowTo08, hkiMoveFollowTo09 });
+            Program.hotkeys.AddRange(new[]
+            {
+                hkiGoTo01, hkiGoTo02, hkiGoTo03, hkiGoTo04, hkiGoTo05, hkiGoTo06, hkiGoTo07, hkiGoTo08, hkiGoTo09,
+                hkiMoveTo01, hkiMoveTo02, hkiMoveTo03, hkiMoveTo04, hkiMoveTo05, hkiMoveTo06, hkiMoveTo07, hkiMoveTo08,
+                hkiMoveTo09,
+                hkiMoveFollowTo01, hkiMoveFollowTo02, hkiMoveFollowTo03, hkiMoveFollowTo04, hkiMoveFollowTo05,
+                hkiMoveFollowTo06, hkiMoveFollowTo07, hkiMoveFollowTo08, hkiMoveFollowTo09
+            });
 
             keyGoTo01.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
             keyGoTo01.Register(Keys.NumPad1, false, true, false, true);
@@ -1580,161 +1600,41 @@ namespace dnVirtualDesktop
 
             keyMoveFollowTo09.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
             keyMoveFollowTo09.Register(Keys.NumPad9, true, true, false, true);
-
-
         }
 
         private void CreateDefaultHotkeys_D()
         {
-            Hotkey keyGoTo01 = new Hotkey("1");
-            Hotkey keyGoTo02 = new Hotkey("2");
-            Hotkey keyGoTo03 = new Hotkey("3");
-            Hotkey keyGoTo04 = new Hotkey("4");
-            Hotkey keyGoTo05 = new Hotkey("5");
-            Hotkey keyGoTo06 = new Hotkey("6");
-            Hotkey keyGoTo07 = new Hotkey("7");
-            Hotkey keyGoTo08 = new Hotkey("8");
-            Hotkey keyGoTo09 = new Hotkey("9");
+            var hotKeyList = new List<HotkeyItem[]>(3)
+            {
+                new HotkeyItem[9],
+                new HotkeyItem[9],
+                new HotkeyItem[9]
+            };
+            for (var i = 1; i < 10; i++)
+            {
+                Enum.TryParse("D" + i, out Keys keyCode);
 
-            Hotkey keyMoveTo01 = new Hotkey("1");
-            Hotkey keyMoveTo02 = new Hotkey("2");
-            Hotkey keyMoveTo03 = new Hotkey("3");
-            Hotkey keyMoveTo04 = new Hotkey("4");
-            Hotkey keyMoveTo05 = new Hotkey("5");
-            Hotkey keyMoveTo06 = new Hotkey("6");
-            Hotkey keyMoveTo07 = new Hotkey("7");
-            Hotkey keyMoveTo08 = new Hotkey("8");
-            Hotkey keyMoveTo09 = new Hotkey("9");
+                var keyGoTo = new Hotkey(i.ToString());
+                hotKeyList[0][i] = new HotkeyItem("Navigate to Desktop", keyGoTo);
 
-            Hotkey keyMoveFollowTo01 = new Hotkey("1");
-            Hotkey keyMoveFollowTo02 = new Hotkey("2");
-            Hotkey keyMoveFollowTo03 = new Hotkey("3");
-            Hotkey keyMoveFollowTo04 = new Hotkey("4");
-            Hotkey keyMoveFollowTo05 = new Hotkey("5");
-            Hotkey keyMoveFollowTo06 = new Hotkey("6");
-            Hotkey keyMoveFollowTo07 = new Hotkey("7");
-            Hotkey keyMoveFollowTo08 = new Hotkey("8");
-            Hotkey keyMoveFollowTo09 = new Hotkey("9");
+                keyGoTo.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
+                keyGoTo.Register(keyCode, false, false, false, true);
 
-            HotkeyItem hkiGoTo01 = new HotkeyItem("Navigate to Desktop", keyGoTo01);
-            HotkeyItem hkiGoTo02 = new HotkeyItem("Navigate to Desktop", keyGoTo02);
-            HotkeyItem hkiGoTo03 = new HotkeyItem("Navigate to Desktop", keyGoTo03);
-            HotkeyItem hkiGoTo04 = new HotkeyItem("Navigate to Desktop", keyGoTo04);
-            HotkeyItem hkiGoTo05 = new HotkeyItem("Navigate to Desktop", keyGoTo05);
-            HotkeyItem hkiGoTo06 = new HotkeyItem("Navigate to Desktop", keyGoTo06);
-            HotkeyItem hkiGoTo07 = new HotkeyItem("Navigate to Desktop", keyGoTo07);
-            HotkeyItem hkiGoTo08 = new HotkeyItem("Navigate to Desktop", keyGoTo08);
-            HotkeyItem hkiGoTo09 = new HotkeyItem("Navigate to Desktop", keyGoTo09);
+                var keyMoveTo = new Hotkey(i.ToString());
+                hotKeyList[1][i] = new HotkeyItem("Move Window to Desktop", keyMoveTo);
 
-            HotkeyItem hkiMoveTo01 = new HotkeyItem("Move Window to Desktop", keyMoveTo01);
-            HotkeyItem hkiMoveTo02 = new HotkeyItem("Move Window to Desktop", keyMoveTo02);
-            HotkeyItem hkiMoveTo03 = new HotkeyItem("Move Window to Desktop", keyMoveTo03);
-            HotkeyItem hkiMoveTo04 = new HotkeyItem("Move Window to Desktop", keyMoveTo04);
-            HotkeyItem hkiMoveTo05 = new HotkeyItem("Move Window to Desktop", keyMoveTo05);
-            HotkeyItem hkiMoveTo06 = new HotkeyItem("Move Window to Desktop", keyMoveTo06);
-            HotkeyItem hkiMoveTo07 = new HotkeyItem("Move Window to Desktop", keyMoveTo07);
-            HotkeyItem hkiMoveTo08 = new HotkeyItem("Move Window to Desktop", keyMoveTo08);
-            HotkeyItem hkiMoveTo09 = new HotkeyItem("Move Window to Desktop", keyMoveTo09);
+                var keyMoveFollowTo = new Hotkey(i.ToString());
+                hotKeyList[2][i] = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo);
 
-            HotkeyItem hkiMoveFollowTo01 = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo01);
-            HotkeyItem hkiMoveFollowTo02 = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo02);
-            HotkeyItem hkiMoveFollowTo03 = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo03);
-            HotkeyItem hkiMoveFollowTo04 = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo04);
-            HotkeyItem hkiMoveFollowTo05 = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo05);
-            HotkeyItem hkiMoveFollowTo06 = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo06);
-            HotkeyItem hkiMoveFollowTo07 = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo07);
-            HotkeyItem hkiMoveFollowTo08 = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo08);
-            HotkeyItem hkiMoveFollowTo09 = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo09);
+                keyMoveTo.HotkeyActivated += VirtualDestopFunctions.DesktopMove;
+                keyMoveTo.Register(keyCode, false, false, true, true);
 
-            Program.hotkeys.AddRange(new HotkeyItem[] {
-                             hkiGoTo01, hkiGoTo02, hkiGoTo03, hkiGoTo04, hkiGoTo05, hkiGoTo06, hkiGoTo07, hkiGoTo08, hkiGoTo09,
-                             hkiMoveTo01, hkiMoveTo02, hkiMoveTo03, hkiMoveTo04, hkiMoveTo05, hkiMoveTo06, hkiMoveTo07, hkiMoveTo08, hkiMoveTo09,
-                             hkiMoveFollowTo01, hkiMoveFollowTo02, hkiMoveFollowTo03, hkiMoveFollowTo04, hkiMoveFollowTo05, hkiMoveFollowTo06, hkiMoveFollowTo07, hkiMoveFollowTo08, hkiMoveFollowTo09 });
+                //keyMoveFollowTo.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
+                //keyMoveFollowTo.Register(keyCode, true, true, false, true);
+            }
 
-            keyGoTo01.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
-            keyGoTo01.Register(Keys.D1, false, true, false, true);
-
-            keyGoTo02.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
-            keyGoTo02.Register(Keys.D2, false, true, false, true);
-
-            keyGoTo03.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
-            keyGoTo03.Register(Keys.D3, false, true, false, true);
-
-            keyGoTo04.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
-            keyGoTo04.Register(Keys.D4, false, true, false, true);
-
-            keyGoTo05.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
-            keyGoTo05.Register(Keys.D5, false, true, false, true);
-
-            keyGoTo06.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
-            keyGoTo06.Register(Keys.D6, false, true, false, true);
-
-            keyGoTo07.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
-            keyGoTo07.Register(Keys.D7, false, true, false, true);
-
-            keyGoTo08.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
-            keyGoTo08.Register(Keys.D8, false, true, false, true);
-
-            keyGoTo09.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
-            keyGoTo09.Register(Keys.D9, false, true, false, true);
-
-
-            keyMoveTo01.HotkeyActivated += VirtualDestopFunctions.DesktopMove;
-            keyMoveTo01.Register(Keys.D1, true, false, false, true);
-
-            keyMoveTo02.HotkeyActivated += VirtualDestopFunctions.DesktopMove;
-            keyMoveTo02.Register(Keys.D2, true, false, false, true);
-
-            keyMoveTo03.HotkeyActivated += VirtualDestopFunctions.DesktopMove;
-            keyMoveTo03.Register(Keys.D3, true, false, false, true);
-
-            keyMoveTo04.HotkeyActivated += VirtualDestopFunctions.DesktopMove;
-            keyMoveTo04.Register(Keys.D4, true, false, false, true);
-
-            keyMoveTo05.HotkeyActivated += VirtualDestopFunctions.DesktopMove;
-            keyMoveTo05.Register(Keys.D5, true, false, false, true);
-
-            keyMoveTo06.HotkeyActivated += VirtualDestopFunctions.DesktopMove;
-            keyMoveTo06.Register(Keys.D6, true, false, false, true);
-
-            keyMoveTo07.HotkeyActivated += VirtualDestopFunctions.DesktopMove;
-            keyMoveTo07.Register(Keys.D7, true, false, false, true);
-
-            keyMoveTo08.HotkeyActivated += VirtualDestopFunctions.DesktopMove;
-            keyMoveTo08.Register(Keys.D8, true, false, false, true);
-
-            keyMoveTo09.HotkeyActivated += VirtualDestopFunctions.DesktopMove;
-            keyMoveTo09.Register(Keys.D9, true, false, false, true);
-
-
-            keyMoveFollowTo01.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
-            keyMoveFollowTo01.Register(Keys.D1, true, true, false, true);
-
-            keyMoveFollowTo02.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
-            keyMoveFollowTo02.Register(Keys.D2, true, true, false, true);
-
-            keyMoveFollowTo03.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
-            keyMoveFollowTo03.Register(Keys.D3, true, true, false, true);
-
-            keyMoveFollowTo04.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
-            keyMoveFollowTo04.Register(Keys.D4, true, true, false, true);
-
-            keyMoveFollowTo05.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
-            keyMoveFollowTo05.Register(Keys.D5, true, true, false, true);
-
-            keyMoveFollowTo06.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
-            keyMoveFollowTo06.Register(Keys.D6, true, true, false, true);
-
-            keyMoveFollowTo07.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
-            keyMoveFollowTo07.Register(Keys.D7, true, true, false, true);
-
-            keyMoveFollowTo08.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
-            keyMoveFollowTo08.Register(Keys.D8, true, true, false, true);
-
-            keyMoveFollowTo09.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
-            keyMoveFollowTo09.Register(Keys.D9, true, true, false, true);
-
-
+            foreach (var subList in hotKeyList)
+                Program.hotkeys.AddRange(subList);
         }
 
         public void ShowSettings()
@@ -1742,16 +1642,17 @@ namespace dnVirtualDesktop
             try
             {
                 LoadSettings();
-                this.Opacity = 100;
-                this.Visible = true;
-                this.TopMost = true;
-                this.ShowInTaskbar = true;
+                Opacity = 100;
+                Visible = true;
+                TopMost = true;
+                ShowInTaskbar = true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occured showing the settings window. See additional details below." + Environment.NewLine + Environment.NewLine + 
-                    ex.Message + Environment.NewLine + 
-                    ex.Source + "::" + ex.TargetSite.Name);
+                MessageBox.Show("An error occured showing the settings window. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -1790,9 +1691,8 @@ namespace dnVirtualDesktop
                             case "Previous":
                                 text = "Move to Previous Desktop";
                                 break;
-                            default:
-                                break;
                         }
+
                         break;
                     case "Move Window to Desktop & Follow":
                         switch (hki.DesktopNumber())
@@ -1814,9 +1714,8 @@ namespace dnVirtualDesktop
                             case "Previous":
                                 text = "Move Window to Previous Desktop & Follow";
                                 break;
-                            default:
-                                break;
                         }
+
                         break;
                     case "Pin/Unpin Window":
                         text = hki.Type;
@@ -1824,12 +1723,13 @@ namespace dnVirtualDesktop
                     case "Pin/Unpin Application":
                         text = hki.Type;
                         break;
-                    default:
-                        break;
                 }
-                System.Windows.Forms.ListViewItem lvi = new System.Windows.Forms.ListViewItem(new string[] {
-                                                                                                                text,
-                                                                                                                hotkey }, -1);
+
+                ListViewItem lvi = new ListViewItem(new[]
+                {
+                    text,
+                    hotkey
+                }, -1);
                 lstHotkeys.Items.Add(lvi);
                 lstHotkeys.Refresh();
             }
@@ -1839,16 +1739,17 @@ namespace dnVirtualDesktop
         {
             try
             {
-                this.Opacity = 0;
-                this.Visible = false;
-                this.TopMost = false;
-                this.ShowInTaskbar = false;
+                Opacity = 0;
+                Visible = false;
+                TopMost = false;
+                ShowInTaskbar = false;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occured hiding the settings window. See additional details below." + Environment.NewLine + Environment.NewLine + 
-                    ex.Message + Environment.NewLine + 
-                    ex.Source + "::" + ex.TargetSite.Name);
+                MessageBox.Show("An error occured hiding the settings window. See additional details below." +
+                                Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine +
+                                ex.Source + "::" + ex.TargetSite.Name);
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
         }
@@ -1860,16 +1761,18 @@ namespace dnVirtualDesktop
                 if (Program.storage.FileExists("dnVirtualDesktop.bin") == false)
                 {
                     cmbIcons.Text = "Green";
-                    CreateDefaultHotkeys_Numpad();
-                    //CreateDefaultHotkeys_D();
+                    //CreateDefaultHotkeys_Numpad();
+                    CreateDefaultHotkeys_D();
                     CreateDefaultHotkeys();
                     SaveSettings();
                 }
-              
-                System.IO.Stream stream = new IsolatedStorageFileStream("dnVirtualDesktop.bin", System.IO.FileMode.Open, Program.storage);
-                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+
+                Stream stream = new IsolatedStorageFileStream("dnVirtualDesktop.bin", FileMode.Open,
+                    Program.storage);
+                BinaryFormatter bf =
+                    new BinaryFormatter();
                 object oo = bf.Deserialize(stream);
-                string settings = (string)oo;
+                string settings = (string) oo;
                 string[] indivdualSettings = settings.Split('~');
 
 
@@ -1906,6 +1809,7 @@ namespace dnVirtualDesktop
                     hki.hk.Unregister();
                     hki.hk.Dispose();
                 }
+
                 Program.hotkeys.Clear();
 
                 //hotkeys
@@ -1921,7 +1825,7 @@ namespace dnVirtualDesktop
 
                     Hotkey hk = new Hotkey(desktopNumber);
                     KeysConverter kc = new KeysConverter();
-                    hk.Register((Keys)kc.ConvertFromString(KEY), ALT, CTRL, SHIFT, WIN);
+                    hk.Register((Keys) kc.ConvertFromString(KEY), ALT, CTRL, SHIFT, WIN);
 
 
                     HotkeyItem hki = new HotkeyItem(type, hk);
@@ -1952,9 +1856,8 @@ namespace dnVirtualDesktop
                                 case "Previous":
                                     hk.HotkeyActivated += VirtualDestopFunctions.DesktopMovePrevious;
                                     break;
-                                default:
-                                    break;
                             }
+
                             break;
                         case "Move Window to Desktop & Follow":
                             switch (desktopNumber)
@@ -1976,9 +1879,8 @@ namespace dnVirtualDesktop
                                 case "Previous":
                                     hk.HotkeyActivated += VirtualDestopFunctions.DesktopMovePreviousFollow;
                                     break;
-                                default:
-                                    break;
                             }
+
                             break;
                         case "Pin/Unpin Window":
                             hk.HotkeyActivated += VirtualDestopFunctions.PinWindow;
@@ -1986,10 +1888,7 @@ namespace dnVirtualDesktop
                         case "Pin/Unpin Application":
                             hk.HotkeyActivated += VirtualDestopFunctions.PinApp;
                             break;
-                        default:
-                            break;
                     }
-
                 }
 
                 stream.Close();
@@ -2008,8 +1907,6 @@ namespace dnVirtualDesktop
                 Program.WallpaperStyles.Add(cmbWallpaperStyle9.Text);
 
                 UpdateHotkeyTab();
-               
-
             }
             catch (Exception ex)
             {
@@ -2021,9 +1918,6 @@ namespace dnVirtualDesktop
         {
             try
             {
-
-               
-
                 Program.IconTheme = cmbIcons.Text;
                 StringBuilder settings = new StringBuilder();
                 settings.Append("IconTheme;" + cmbIcons.Text);
@@ -2039,13 +1933,17 @@ namespace dnVirtualDesktop
                 settings.Append("~DesktopWallpaper9;" + txtWallpaper9.Text + ";" + cmbWallpaperStyle9.Text);
                 settings.Append("~DefaultWallpaper;" + txtDefaultWallpaper.Text + ";" + cmbWallpaperStyleDefault.Text);
 
-                foreach(HotkeyItem hki in Program.hotkeys)
+                foreach (HotkeyItem hki in Program.hotkeys)
                 {
-                    settings.Append("~" + hki.Type + ";" + hki.DesktopNumber() + ";" + hki.ALT().ToString() + ";" + hki.CTRL().ToString() + ";" + hki.SHIFT().ToString() + ";" + hki.WIN().ToString() + ";" + hki.KEY());
+                    settings.Append("~" + hki.Type + ";" + hki.DesktopNumber() + ";" + hki.ALT() + ";" +
+                                    hki.CTRL() + ";" + hki.SHIFT() + ";" + hki.WIN() +
+                                    ";" + hki.KEY());
                 }
 
-                System.IO.Stream stream = new IsolatedStorageFileStream("dnVirtualDesktop.bin", System.IO.FileMode.OpenOrCreate, Program.storage);
-                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                Stream stream = new IsolatedStorageFileStream("dnVirtualDesktop.bin",
+                    FileMode.OpenOrCreate, Program.storage);
+                BinaryFormatter bf =
+                    new BinaryFormatter();
                 bf.Serialize(stream, settings.ToString());
                 stream.Close();
                 stream.Dispose();
@@ -2065,13 +1963,11 @@ namespace dnVirtualDesktop
 
                 SetSystemTrayIcon();
                 SetWallpaper();
-
             }
             catch (Exception ex)
             {
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
-
         }
 
         #endregion
@@ -2097,7 +1993,7 @@ namespace dnVirtualDesktop
 
         private void lblGithub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/mzomparelli/dnVirtualDesktop");
+            Process.Start("https://github.com/mzomparelli/dnVirtualDesktop");
         }
 
         private void lblEasterEgg_Click(object sender, EventArgs e)
@@ -2113,7 +2009,6 @@ namespace dnVirtualDesktop
         {
             frmHotKey f = new frmHotKey();
             f.ShowDialog(this);
-
         }
 
         private void btnDeleteHotkey_Click(object sender, EventArgs e)
@@ -2128,14 +2023,12 @@ namespace dnVirtualDesktop
                     Program.hotkeys.RemoveAt(i);
                     SaveSettings();
                     lstHotkeys.Items.RemoveAt(i);
-
                 }
             }
             catch (Exception ex)
             {
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
-            
         }
 
         #endregion
@@ -2185,17 +2078,13 @@ namespace dnVirtualDesktop
                         break;
                 }
             }
-            else
-            {
-                //do nothing
-            }
 
             dlg.Dispose();
         }
 
         private void btnBrowseWallpaper_Click(object sender, EventArgs e)
         {
-            Button btn = (Button)sender;
+            Button btn = (Button) sender;
             GetFileDialogResult(btn.Tag.ToString());
         }
 
@@ -2236,7 +2125,6 @@ namespace dnVirtualDesktop
             {
                 Log.LogEvent("Exception", "", "", "frmMain", ex);
             }
-
         }
 
         #endregion
@@ -2244,7 +2132,6 @@ namespace dnVirtualDesktop
         #endregion
 
         #region "Donate"
-
 
         private void mnuBuyBeer_Click(object sender, EventArgs e)
         {
@@ -2266,7 +2153,6 @@ namespace dnVirtualDesktop
 
         private void mnuBuyLamborghini_Click(object sender, EventArgs e)
         {
-            
             Log.LogEvent("Buy me a Lamborghini", "", "", "frmMain", null);
             /*
             DialogResult result = MessageBox.Show("OMG for real!?", ":D", MessageBoxButtons.YesNo);
@@ -2303,14 +2189,10 @@ namespace dnVirtualDesktop
             //System.Diagnostics.Process.Start("https://www.paypal.me/MichaelZomparelli/");
         }
 
-
-
-
         #endregion
 
         private void lstHotkeys_SelectedIndexChanged(object sender, EventArgs e)
         {
-
         }
     }
 }
@@ -2321,15 +2203,12 @@ public class HotkeyItem
 
     public HotkeyItem(string type, Hotkey hk)
     {
-        this.Type = type;
+        Type = type;
         this.hk = hk;
     }
 
-    public string Type
-    {
-        get; set;
-    }
-    
+    public string Type { get; set; }
+
     public bool ALT()
     {
         return hk.modifierALT;
@@ -2359,5 +2238,4 @@ public class HotkeyItem
     {
         return hk.DesktopNumber();
     }
-
 }

@@ -67,6 +67,7 @@
       <DependentUpon>frmAbout.cs</DependentUpon>
     </Compile>
     <Compile Include="Internal\Hook\CbtHook.cs" />
+    <Compile Include="Internal\Hook\KeyboardHook.cs" />
     <Compile Include="Internal\Hook\LocalWindowsHook.cs" />
     <Compile Include="Internal\Hook\MouseHook.cs" />
     <Compile Include="Internal\Hook\MouseHookComponent.cs">
@@ -377,6 +378,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\Zomp\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LowLevelHooks\LowLevelHooks.csproj">
+      <Project>{61210b6e-8f4d-47ed-9ea1-1223ea742351}</Project>
+      <Name>LowLevelHooks</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

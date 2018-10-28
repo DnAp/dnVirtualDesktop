@@ -1,27 +1,29 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace LowLevelHooks.Keyboard
 {
     public sealed class KeyboardHook : IDisposable, IHook
     {
+        private uint _modCode;
+
         #region Custom Events
 
-        public event EventHandler<KeyboardHookEventArgs> KeyDown;
+        public delegate bool KeyDownDelegate(KeyboardHookEventArgs e);
 
-        private void OnKeyDown(KeyboardHookEventArgs e)
+        private readonly KeyDownDelegate _keyDown;
+
+        private bool OnKeyDown(KeyboardHookEventArgs e)
         {
-            if (KeyDown != null)
-                KeyDown(this, e);
-            OnKeyEvent(e);
+            return _keyDown == null || _keyDown(e);
         }
 
         public event EventHandler<KeyboardHookEventArgs> KeyUp;
 
         private void OnKeyUp(KeyboardHookEventArgs e)
         {
-            if (KeyUp != null)
-                KeyUp(this, e);
+            KeyUp?.Invoke(this, e);
             OnKeyEvent(e);
         }
 
@@ -29,8 +31,7 @@ namespace LowLevelHooks.Keyboard
 
         private void OnKeyEvent(KeyboardHookEventArgs e)
         {
-            if (KeyEvent != null)
-                KeyEvent(this, e);
+            KeyEvent?.Invoke(this, e);
         }
 
         #endregion
@@ -38,26 +39,32 @@ namespace LowLevelHooks.Keyboard
         /// <summary>
         /// The hook Id we create. This is stored so we can unhook later.
         /// </summary>
-        private IntPtr hookId;
-        private readonly LowLevelProc callback;
-        private bool hooked;
+        private IntPtr _hookId;
 
-        public KeyboardHook()
+        private readonly LowLevelProc _callback;
+
+        public bool Hooked { get; private set; }
+
+        public KeyboardHook(KeyDownDelegate keyDown)
         {
-            callback = KeyboardHookCallback;
+            _keyDown = keyDown;
+            _callback = KeyboardHookCallback;
         }
 
         public void Hook()
         {
-            hookId = Win32.SetWindowsHook(Win32.Hooks.WH_KEYBOARD_LL, callback);
-            hooked = true;
+            if (Hooked) return;
+
+            _hookId = Win32.SetWindowsHook(Win32.Hooks.WH_KEYBOARD_LL, _callback);
+            Hooked = true;
         }
 
         public void Unhook()
         {
-            if (!hooked) return;
-            NativeMethods.UnhookWindowsHookEx(hookId);
-            hooked = false;
+            if (!Hooked) return;
+
+            NativeMethods.UnhookWindowsHookEx(_hookId);
+            Hooked = false;
         }
 
         /// <summary>
@@ -66,36 +73,30 @@ namespace LowLevelHooks.Keyboard
         /// </summary>
         private IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0)
+            if (nCode < 0)
+                return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
+
+            var lParamStruct = (KBDLLHOOKSTRUCT) Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
+            var e = new KeyboardHookEventArgs(lParamStruct, (KeyboardMessages) wParam, _modCode);
+            _modCode = e.ModCode;
+            switch (e.KeyboardEventName)
             {
-                var lParamStruct = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
-                var e = new KeyboardHookEventArgs(lParamStruct);
-                switch ((KeyboardMessages)wParam)
-                {
-                    case KeyboardMessages.WmKeydown:
-                        e.KeyboardEventName = KeyboardEventNames.KeyDown;
-                        OnKeyDown(e);
+                case KeyboardEventNames.KeyDown:
+                case KeyboardEventNames.SystemKeyDown:
+                    if (!OnKeyDown(e))
                         return new IntPtr(1);
-                        break;
-                    case KeyboardMessages.WmKeyup:
-                        e.KeyboardEventName = KeyboardEventNames.KeyUp;
-                        OnKeyUp(e);
-                        break;
-                    case KeyboardMessages.WmSyskeydown:
-                        e.KeyboardEventName = KeyboardEventNames.SystemKeyDown;
-                        OnKeyDown(e);
-                        break;
-                    case KeyboardMessages.WmSyskeyup:
-                        e.KeyboardEventName = KeyboardEventNames.SystemKeyUp;
-                        OnKeyUp(e);
-                        break;
-                }
+                    break;
+                case KeyboardEventNames.KeyUp:
+                case KeyboardEventNames.SystemKeyUp:
+                    OnKeyUp(e);
+                    break;
             }
-            return NativeMethods.CallNextHookEx(hookId, nCode, wParam, lParam);
-            
+
+            return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
         }
 
         #region IDisposable Members / Finalizer
+
         /// <summary>
         /// Call this method to unhook the Keyboard Hook, and to release resources allocated to it.
         /// </summary>

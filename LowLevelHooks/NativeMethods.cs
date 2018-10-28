@@ -6,6 +6,11 @@ namespace LowLevelHooks
 {
     internal static class NativeMethods
     {
+        internal const uint MOD_ALT = 0x1;
+        internal const uint MOD_CONTROL = 0x2;
+        internal const uint MOD_SHIFT = 0x4;
+        internal const uint MOD_WIN = 0x8;
+        
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         internal static extern IntPtr SetWindowsHookEx(int idHook, LowLevelProc lpfn, IntPtr hMod, uint dwThreadId);
 
