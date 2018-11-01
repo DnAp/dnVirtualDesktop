@@ -1641,7 +1641,8 @@ namespace dnVirtualDesktop
         {
             try
             {
-                LoadSettings();
+                //LoadSettings();
+                UpdateHotkeyTab();
                 Opacity = 100;
                 Visible = true;
                 TopMost = true;
@@ -1660,79 +1661,19 @@ namespace dnVirtualDesktop
         public void UpdateHotkeyTab()
         {
             lstHotkeys.Items.Clear();
-            foreach (HotkeyItem hki in Program.hotkeys)
+            foreach (var hki in Program.hotkeys)
             {
-                string text = "";
-                string hotkey = hki.hk.HotKeyString();
-
-
-                switch (hki.Type)
-                {
-                    case "Navigate to Desktop":
-                        text = hki.Type + " #" + hki.DesktopNumber();
-                        break;
-                    case "Move Window to Desktop":
-                        switch (hki.DesktopNumber())
-                        {
-                            case "1":
-                            case "2":
-                            case "3":
-                            case "4":
-                            case "5":
-                            case "6":
-                            case "7":
-                            case "8":
-                            case "9":
-                                text = hki.Type + " #" + hki.DesktopNumber();
-                                break;
-                            case "Next":
-                                text = "Move to Next Desktop";
-                                break;
-                            case "Previous":
-                                text = "Move to Previous Desktop";
-                                break;
-                        }
-
-                        break;
-                    case "Move Window to Desktop & Follow":
-                        switch (hki.DesktopNumber())
-                        {
-                            case "1":
-                            case "2":
-                            case "3":
-                            case "4":
-                            case "5":
-                            case "6":
-                            case "7":
-                            case "8":
-                            case "9":
-                                text = "Move Window to Desktop #" + hki.DesktopNumber() + " & Follow";
-                                break;
-                            case "Next":
-                                text = "Move Window to Next Desktop & Follow";
-                                break;
-                            case "Previous":
-                                text = "Move Window to Previous Desktop & Follow";
-                                break;
-                        }
-
-                        break;
-                    case "Pin/Unpin Window":
-                        text = hki.Type;
-                        break;
-                    case "Pin/Unpin Application":
-                        text = hki.Type;
-                        break;
-                }
-
-                ListViewItem lvi = new ListViewItem(new[]
-                {
-                    text,
-                    hotkey
-                }, -1);
+                var lvi = new ListViewItem(
+                    new[]
+                    {
+                        hki.GetLabel(), 
+                        hki.Hotkey.HotKeyString()
+                    },
+                    -1
+                );
                 lstHotkeys.Items.Add(lvi);
-                lstHotkeys.Refresh();
             }
+            lstHotkeys.Refresh();
         }
 
         public void HideSettings()
@@ -1806,8 +1747,8 @@ namespace dnVirtualDesktop
                 //unregister all current hotkeys and remove from the list
                 foreach (HotkeyItem hki in Program.hotkeys)
                 {
-                    hki.hk.Unregister();
-                    hki.hk.Dispose();
+                    hki.Hotkey.Unregister();
+                    hki.Hotkey.Dispose();
                 }
 
                 Program.hotkeys.Clear();
@@ -1830,7 +1771,6 @@ namespace dnVirtualDesktop
 
                     HotkeyItem hki = new HotkeyItem(type, hk);
                     Program.hotkeys.Add(hki);
-
                     switch (type)
                     {
                         case "Navigate to Desktop":
@@ -2018,8 +1958,8 @@ namespace dnVirtualDesktop
                 int i = lstHotkeys.SelectedIndices[0];
                 if (i > -1)
                 {
-                    Program.hotkeys[i].hk.Unregister();
-                    Program.hotkeys[i].hk.Dispose();
+                    Program.hotkeys[i].Hotkey.Unregister();
+                    Program.hotkeys[i].Hotkey.Dispose();
                     Program.hotkeys.RemoveAt(i);
                     SaveSettings();
                     lstHotkeys.Items.RemoveAt(i);
@@ -2194,48 +2134,13 @@ namespace dnVirtualDesktop
         private void lstHotkeys_SelectedIndexChanged(object sender, EventArgs e)
         {
         }
-    }
-}
 
-public class HotkeyItem
-{
-    public Hotkey hk = new Hotkey("");
+        private void frmMain_Load_1(object sender, EventArgs e)
+        {
+        }
 
-    public HotkeyItem(string type, Hotkey hk)
-    {
-        Type = type;
-        this.hk = hk;
-    }
-
-    public string Type { get; set; }
-
-    public bool ALT()
-    {
-        return hk.modifierALT;
-    }
-
-    public bool CTRL()
-    {
-        return hk.modifierCTRL;
-    }
-
-    public bool SHIFT()
-    {
-        return hk.modifierSHIFT;
-    }
-
-    public bool WIN()
-    {
-        return hk.modifierWIN;
-    }
-
-    public string KEY()
-    {
-        return hk.Key;
-    }
-
-    public string DesktopNumber()
-    {
-        return hk.DesktopNumber();
+        private void mnuSettings_Click_1(object sender, EventArgs e)
+        {
+        }
     }
 }

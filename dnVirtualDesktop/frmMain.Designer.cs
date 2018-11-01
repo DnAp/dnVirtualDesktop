@@ -31,119 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Navigate to Desktop 1",
-            "WIN+CTRL+Numpad1"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Navigate to Desktop 2",
-            "WIN+CTRL+Numpad2"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Navigate to Desktop 3",
-            "WIN+CTRL+Numpad3"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Navigate to Desktop 4",
-            "WIN+CTRL+Numpad4"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Navigate to Desktop 5",
-            "WIN+CTRL+Numpad5"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Navigate to Desktop 6",
-            "WIN+CTRL+Numpad6"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Navigate to Desktop 7",
-            "WIN+CTRL+Numpad7"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Navigate to Desktop 8",
-            "WIN+CTRL+Numpad8"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Navigate to Desktop 9",
-            "WIN+CTRL+Numpad9"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 1",
-            "WIN+ALT+Numpad1"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 2",
-            "WIN+ALT+Numpad2"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 3",
-            "WIN+ALT+Numpad3"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 4",
-            "WIN+ALT+Numpad4"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 5",
-            "WIN+ALT+Numpad5"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 6",
-            "WIN+ALT+Numpad6"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 7",
-            "WIN+ALT+Numpad7"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 8",
-            "WIN+ALT+Numpad8"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 9",
-            "WIN+ALT+Numpad9"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem19 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 1 & Follow",
-            "WIN+CTRL+ALT+Numpad1"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem20 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 2 & Follow",
-            "WIN+CTRL+ALT+Numpad2"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem21 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 3 & Follow",
-            "WIN+CTRL+ALT+Numpad3"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem22 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 4 & Follow",
-            "WIN+CTRL+ALT+Numpad4"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem23 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 5 & Follow",
-            "WIN+CTRL+ALT+Numpad5"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem24 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 6 & Follow",
-            "WIN+CTRL+ALT+Numpad6"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem25 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 7 & Follow",
-            "WIN+CTRL+ALT+Numpad7"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem26 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 8 & Follow",
-            "WIN+CTRL+ALT+Numpad8"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem27 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Desktop 9 & Follow",
-            "WIN+CTRL+ALT+Numpad9"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem28 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Next Desktop & Follow",
-            "WIN+CTRL+ALT+RightArrow"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem29 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Previous Desktop & Follow",
-            "WIN+CTRL+ALT+LeftArrow"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem30 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Next Desktop",
-            "WIN+ALT+RightArrow"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem31 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Move to Previous Desktop",
-            "WIN+ALT+LeftArrow"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem32 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Navigate to Next Desktop",
-            "WIN+CTRL+RightArrow"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem33 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Navigate to Previous Desktop",
-            "WIN+CTRL+LeftArrow"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem34 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Pin/Unpin Window",
-            "WIN+ALT+Z"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem35 = new System.Windows.Forms.ListViewItem(new string[] {
             "Pin/Unpin Application",
             "WIN+ALT+A"}, -1);
             this.SystemTray = new System.Windows.Forms.NotifyIcon(this.components);
             this.SystemTrayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuBuyBeer = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuBuyLunch = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuBuyDinner = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuBuyLamborghini = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuBuyOtherAmount = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuGithub = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSwitchDesktop = new System.Windows.Forms.ToolStripMenuItem();
@@ -238,116 +129,58 @@
             // 
             this.SystemTrayMenu.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.SystemTrayMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.donateToolStripMenuItem,
-            this.toolStripSeparator3,
             this.mnuGithub,
-            this.toolStripSeparator1,
             this.mnuSwitchDesktop,
+            this.toolStripSeparator1,
             this.mnuGatherWindows,
             this.toolStripSeparator2,
             this.mnuSettings,
             this.mnuExit});
             this.SystemTrayMenu.Name = "SystemTrayMenu";
-            this.SystemTrayMenu.Size = new System.Drawing.Size(208, 202);
+            this.SystemTrayMenu.Size = new System.Drawing.Size(215, 188);
             this.SystemTrayMenu.Opening += new System.ComponentModel.CancelEventHandler(this.SystemTrayMenu_Opening);
-            // 
-            // donateToolStripMenuItem
-            // 
-            this.donateToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuBuyBeer,
-            this.mnuBuyLunch,
-            this.mnuBuyDinner,
-            this.mnuBuyLamborghini,
-            this.mnuBuyOtherAmount});
-            this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
-            this.donateToolStripMenuItem.Size = new System.Drawing.Size(207, 30);
-            this.donateToolStripMenuItem.Text = "Donate :)";
-            // 
-            // mnuBuyBeer
-            // 
-            this.mnuBuyBeer.Image = ((System.Drawing.Image)(resources.GetObject("mnuBuyBeer.Image")));
-            this.mnuBuyBeer.Name = "mnuBuyBeer";
-            this.mnuBuyBeer.Size = new System.Drawing.Size(250, 22);
-            this.mnuBuyBeer.Text = "Buy me a beer ($5)";
-            this.mnuBuyBeer.Click += new System.EventHandler(this.mnuBuyBeer_Click);
-            // 
-            // mnuBuyLunch
-            // 
-            this.mnuBuyLunch.Image = ((System.Drawing.Image)(resources.GetObject("mnuBuyLunch.Image")));
-            this.mnuBuyLunch.Name = "mnuBuyLunch";
-            this.mnuBuyLunch.Size = new System.Drawing.Size(250, 22);
-            this.mnuBuyLunch.Text = "Buy me lunch ($10)";
-            this.mnuBuyLunch.Click += new System.EventHandler(this.mnuBuyLunch_Click);
-            // 
-            // mnuBuyDinner
-            // 
-            this.mnuBuyDinner.Image = ((System.Drawing.Image)(resources.GetObject("mnuBuyDinner.Image")));
-            this.mnuBuyDinner.Name = "mnuBuyDinner";
-            this.mnuBuyDinner.Size = new System.Drawing.Size(250, 22);
-            this.mnuBuyDinner.Text = "Buy me dinner ($25)";
-            this.mnuBuyDinner.Click += new System.EventHandler(this.mnuBuyDinner_Click);
-            // 
-            // mnuBuyLamborghini
-            // 
-            this.mnuBuyLamborghini.Image = ((System.Drawing.Image)(resources.GetObject("mnuBuyLamborghini.Image")));
-            this.mnuBuyLamborghini.Name = "mnuBuyLamborghini";
-            this.mnuBuyLamborghini.Size = new System.Drawing.Size(250, 22);
-            this.mnuBuyLamborghini.Text = "Buy me a Lamborghini ($200,000)";
-            this.mnuBuyLamborghini.Click += new System.EventHandler(this.mnuBuyLamborghini_Click);
-            // 
-            // mnuBuyOtherAmount
-            // 
-            this.mnuBuyOtherAmount.Image = ((System.Drawing.Image)(resources.GetObject("mnuBuyOtherAmount.Image")));
-            this.mnuBuyOtherAmount.Name = "mnuBuyOtherAmount";
-            this.mnuBuyOtherAmount.Size = new System.Drawing.Size(250, 22);
-            this.mnuBuyOtherAmount.Text = "Donate Another Amount";
-            this.mnuBuyOtherAmount.Click += new System.EventHandler(this.mnuBuyOtherAmount_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(204, 6);
             // 
             // mnuGithub
             // 
             this.mnuGithub.Image = ((System.Drawing.Image)(resources.GetObject("mnuGithub.Image")));
             this.mnuGithub.Name = "mnuGithub";
-            this.mnuGithub.Size = new System.Drawing.Size(207, 30);
+            this.mnuGithub.Size = new System.Drawing.Size(214, 30);
             this.mnuGithub.Text = "GitHub dnVirtualDesktop";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(204, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(211, 6);
             // 
             // mnuSwitchDesktop
             // 
             this.mnuSwitchDesktop.Name = "mnuSwitchDesktop";
-            this.mnuSwitchDesktop.Size = new System.Drawing.Size(207, 30);
+            this.mnuSwitchDesktop.Size = new System.Drawing.Size(214, 30);
             this.mnuSwitchDesktop.Text = "Switch Desktop";
             // 
             // mnuGatherWindows
             // 
             this.mnuGatherWindows.Name = "mnuGatherWindows";
-            this.mnuGatherWindows.Size = new System.Drawing.Size(207, 30);
+            this.mnuGatherWindows.Size = new System.Drawing.Size(214, 30);
             this.mnuGatherWindows.Text = "Bring All Windows Here";
             this.mnuGatherWindows.Click += new System.EventHandler(this.mnuGatherWindows_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(204, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(211, 6);
             // 
             // mnuSettings
             // 
             this.mnuSettings.Name = "mnuSettings";
-            this.mnuSettings.Size = new System.Drawing.Size(207, 30);
+            this.mnuSettings.Size = new System.Drawing.Size(214, 30);
             this.mnuSettings.Text = "Settings";
+            this.mnuSettings.Click += new System.EventHandler(this.mnuSettings_Click_1);
             // 
             // mnuExit
             // 
             this.mnuExit.Name = "mnuExit";
-            this.mnuExit.Size = new System.Drawing.Size(207, 30);
+            this.mnuExit.Size = new System.Drawing.Size(214, 30);
             this.mnuExit.Text = "Exit";
             // 
             // lstHotkeys
@@ -356,41 +189,7 @@
             this.colTask,
             this.colHotKey});
             this.lstHotkeys.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4,
-            listViewItem5,
-            listViewItem6,
-            listViewItem7,
-            listViewItem8,
-            listViewItem9,
-            listViewItem10,
-            listViewItem11,
-            listViewItem12,
-            listViewItem13,
-            listViewItem14,
-            listViewItem15,
-            listViewItem16,
-            listViewItem17,
-            listViewItem18,
-            listViewItem19,
-            listViewItem20,
-            listViewItem21,
-            listViewItem22,
-            listViewItem23,
-            listViewItem24,
-            listViewItem25,
-            listViewItem26,
-            listViewItem27,
-            listViewItem28,
-            listViewItem29,
-            listViewItem30,
-            listViewItem31,
-            listViewItem32,
-            listViewItem33,
-            listViewItem34,
-            listViewItem35});
+            listViewItem1});
             this.lstHotkeys.Location = new System.Drawing.Point(1, 0);
             this.lstHotkeys.Margin = new System.Windows.Forms.Padding(2);
             this.lstHotkeys.Name = "lstHotkeys";
@@ -554,7 +353,7 @@
             this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage2.Size = new System.Drawing.Size(413, 318);
+            this.tabPage2.Size = new System.Drawing.Size(649, 318);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Wallpaper";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -1028,7 +827,7 @@
             this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage3.Size = new System.Drawing.Size(413, 318);
+            this.tabPage3.Size = new System.Drawing.Size(649, 318);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "System Tray Icons";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -1062,7 +861,7 @@
             this.tabPinnedApps.Margin = new System.Windows.Forms.Padding(2);
             this.tabPinnedApps.Name = "tabPinnedApps";
             this.tabPinnedApps.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPinnedApps.Size = new System.Drawing.Size(413, 318);
+            this.tabPinnedApps.Size = new System.Drawing.Size(649, 318);
             this.tabPinnedApps.TabIndex = 3;
             this.tabPinnedApps.Text = "Pinned Applications";
             this.tabPinnedApps.UseVisualStyleBackColor = true;
@@ -1076,7 +875,7 @@
             this.lstPinnedApps.Location = new System.Drawing.Point(2, 2);
             this.lstPinnedApps.Margin = new System.Windows.Forms.Padding(2);
             this.lstPinnedApps.Name = "lstPinnedApps";
-            this.lstPinnedApps.Size = new System.Drawing.Size(409, 314);
+            this.lstPinnedApps.Size = new System.Drawing.Size(645, 314);
             this.lstPinnedApps.TabIndex = 0;
             // 
             // mnuPinnedApps
@@ -1102,7 +901,7 @@
             this.tabPinnedWindows.Margin = new System.Windows.Forms.Padding(2);
             this.tabPinnedWindows.Name = "tabPinnedWindows";
             this.tabPinnedWindows.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPinnedWindows.Size = new System.Drawing.Size(413, 318);
+            this.tabPinnedWindows.Size = new System.Drawing.Size(649, 318);
             this.tabPinnedWindows.TabIndex = 4;
             this.tabPinnedWindows.Text = "Pinned Windows";
             this.tabPinnedWindows.UseVisualStyleBackColor = true;
@@ -1118,7 +917,7 @@
             this.lstPinnedWindows.Location = new System.Drawing.Point(2, 2);
             this.lstPinnedWindows.Margin = new System.Windows.Forms.Padding(2);
             this.lstPinnedWindows.Name = "lstPinnedWindows";
-            this.lstPinnedWindows.Size = new System.Drawing.Size(409, 314);
+            this.lstPinnedWindows.Size = new System.Drawing.Size(645, 314);
             this.lstPinnedWindows.TabIndex = 1;
             // 
             // btnOK
@@ -1148,10 +947,10 @@
             this.lblGithub.Location = new System.Drawing.Point(129, 363);
             this.lblGithub.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblGithub.Name = "lblGithub";
-            this.lblGithub.Size = new System.Drawing.Size(189, 13);
+            this.lblGithub.Size = new System.Drawing.Size(166, 13);
             this.lblGithub.TabIndex = 15;
             this.lblGithub.TabStop = true;
-            this.lblGithub.Text = "GitHub - dnVirtualDesktop - MZomparelli";
+            this.lblGithub.Text = "GitHub - dnVirtualDesktop - DnAp";
             // 
             // frmMain
             // 
@@ -1171,6 +970,7 @@
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "dnVirtualDesktop Settings";
+            this.Load += new System.EventHandler(this.frmMain_Load_1);
             this.SystemTrayMenu.ResumeLayout(false);
             this.tabs.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -1256,13 +1056,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuGatherWindows;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.Label lblVersion;
-        private System.Windows.Forms.ToolStripMenuItem donateToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem mnuBuyBeer;
-        private System.Windows.Forms.ToolStripMenuItem mnuBuyLunch;
-        private System.Windows.Forms.ToolStripMenuItem mnuBuyDinner;
-        private System.Windows.Forms.ToolStripMenuItem mnuBuyLamborghini;
-        private System.Windows.Forms.ToolStripMenuItem mnuBuyOtherAmount;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.Label lblEasterEgg;
         private System.Windows.Forms.PictureBox picMax;
         internal System.Windows.Forms.LinkLabel lblGithub;

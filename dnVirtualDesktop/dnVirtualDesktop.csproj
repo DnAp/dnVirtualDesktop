@@ -66,6 +66,7 @@
     <Compile Include="frmAbout.Designer.cs">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </Compile>
+    <Compile Include="HotkeyItem.cs" />
     <Compile Include="Internal\Hook\CbtHook.cs" />
     <Compile Include="Internal\Hook\KeyboardHook.cs" />
     <Compile Include="Internal\Hook\LocalWindowsHook.cs" />
