@@ -1663,16 +1663,9 @@ namespace dnVirtualDesktop
             lstHotkeys.Items.Clear();
             foreach (var hki in Program.hotkeys)
             {
-                var lvi = new ListViewItem(
-                    new[]
-                    {
-                        hki.GetLabel(), 
-                        hki.Hotkey.HotKeyString()
-                    },
-                    -1
-                );
-                lstHotkeys.Items.Add(lvi);
+                lstHotkeys.Items.Add(new ListViewHotkeyItem(hki));
             }
+
             lstHotkeys.Refresh();
         }
 
@@ -1699,7 +1692,7 @@ namespace dnVirtualDesktop
         {
             try
             {
-                if (Program.storage.FileExists("dnVirtualDesktop.bin") == false)
+                //if (Program.storage.FileExists("dnVirtualDesktop.bin") == false)
                 {
                     cmbIcons.Text = "Green";
                     //CreateDefaultHotkeys_Numpad();
@@ -1708,14 +1701,11 @@ namespace dnVirtualDesktop
                     SaveSettings();
                 }
 
-                Stream stream = new IsolatedStorageFileStream("dnVirtualDesktop.bin", FileMode.Open,
-                    Program.storage);
-                BinaryFormatter bf =
-                    new BinaryFormatter();
-                object oo = bf.Deserialize(stream);
-                string settings = (string) oo;
-                string[] indivdualSettings = settings.Split('~');
-
+                Stream stream = new IsolatedStorageFileStream("dnVirtualDesktop.bin", FileMode.Open, Program.storage);
+                var bf = new BinaryFormatter();
+                var oo = bf.Deserialize(stream);
+                var settings = (string) oo;
+                var indivdualSettings = settings.Split('~');
 
                 cmbIcons.Text = indivdualSettings[0].Split(';')[1];
                 Program.IconTheme = cmbIcons.Text;
@@ -1744,16 +1734,17 @@ namespace dnVirtualDesktop
                 cmbWallpaperStyle9.Text = indivdualSettings[9].Split(';')[2];
                 cmbWallpaperStyleDefault.Text = indivdualSettings[10].Split(';')[2];
 
-                //unregister all current hotkeys and remove from the list
+                /*/unregister all current hotkeys and remove from the list
+                 WHY unregistered?
                 foreach (HotkeyItem hki in Program.hotkeys)
                 {
                     hki.Hotkey.Unregister();
                     hki.Hotkey.Dispose();
                 }
 
-                Program.hotkeys.Clear();
+                Program.hotkeys.Clear();*/
 
-                //hotkeys
+                /*hotkeys
                 for (int i = 11; i < indivdualSettings.Length; i++)
                 {
                     string type = indivdualSettings[i].Split(';')[0];
@@ -1829,7 +1820,7 @@ namespace dnVirtualDesktop
                             hk.HotkeyActivated += VirtualDestopFunctions.PinApp;
                             break;
                     }
-                }
+                }*/
 
                 stream.Close();
                 stream.Dispose();

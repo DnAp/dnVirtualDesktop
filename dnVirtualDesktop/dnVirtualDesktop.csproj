@@ -75,6 +75,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Internal\Hook\MouseHookEventArgs.cs" />
+    <Compile Include="Internal\ListViewHotkeyItem.cs" />
     <Compile Include="Internal\NativeMethods.cs" />
     <Compile Include="Internal\TopLevelWindowUtils.cs" />
     <Compile Include="Internal\VirtualDesktop\ApplicationHelper.cs" />
