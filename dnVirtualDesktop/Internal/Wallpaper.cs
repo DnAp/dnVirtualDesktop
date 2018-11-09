@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using dnVirtualDesktop;
+using dnVirtualDesktop.Internal;
 
 public sealed class Wallpaper
 {

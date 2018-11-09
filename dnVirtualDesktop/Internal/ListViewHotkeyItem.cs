@@ -6,11 +6,12 @@ namespace dnVirtualDesktop.Internal
     {
         public readonly HotkeyItem HotkeyItem;
 
-        public ListViewHotkeyItem(HotkeyItem hotkeyItem)
+        public ListViewHotkeyItem(HotkeyItem hotkeyItem) : base(new[] {"", ""})
         {
             HotkeyItem = hotkeyItem;
-            SubItems.Add(hotkeyItem.GetLabel());
-            SubItems.Add(hotkeyItem.Hotkey.HotKeyString());
+
+            SubItems[0].Text = hotkeyItem.Hotkey.HotKeyString();
+            SubItems[1].Text = hotkeyItem.GetLabel();
         }
     }
 }

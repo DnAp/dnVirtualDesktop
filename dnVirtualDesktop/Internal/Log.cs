@@ -1,54 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.ServiceModel;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace dnVirtualDesktop
+namespace dnVirtualDesktop.Internal
 {
     public static class Log
     {
-
         public static void LogEvent(string eventName,
-                          string eventDetails,
-                          string additionalDetails,
-                          string moduleName,
-                          Exception e)
+            string eventDetails,
+            string additionalDetails,
+            string moduleName,
+            Exception e)
         {
-
             try
             {
-                string computerInfo = "Operating System: " + System.Environment.OSVersion;
-
-                AddEventToDatabase("dnVirtualDesktop", Program.version, DateTime.Now, eventName, eventDetails, additionalDetails, moduleName, e, 1, SystemInformation.UserName,
-                SystemInformation.ComputerName, computerInfo);
-                
-
+                //string computerInfo = "Operating System: " + System.Environment.OSVersion;
+                File.AppendAllText(
+                    "event.log",
+                    "[" + DateTime.Now + "]\t" + eventName + "\t" + eventDetails + "\t" + additionalDetails + "\t"
+                    + moduleName + e.Message + "\n"
+                );
+                //AddEventToDatabase("dnVirtualDesktop", Program.version, DateTime.Now, eventName, eventDetails, additionalDetails, moduleName, e, 1, SystemInformation.UserName,
+                //SystemInformation.ComputerName, computerInfo);
             }
             catch (Exception ex)
             {
             }
         }
 
-        private static void AddEventToDatabase(string applicationName, 
-                                        string applicationVersion, 
-                                        DateTime eventDateTime, 
-                                        string eventName, 
-                                        string eventDetails, 
-                                        string additionalDetails,
-                                        string moduleName,
-                                        Exception exception,
-                                        int stackLevel,
-                                        string username,
-                                        string computerName,
-                                        string computerInfo)
+        private static void AddEventToDatabase(string applicationName,
+            string applicationVersion,
+            DateTime eventDateTime,
+            string eventName,
+            string eventDetails,
+            string additionalDetails,
+            string moduleName,
+            Exception exception,
+            int stackLevel,
+            string username,
+            string computerName,
+            string computerInfo)
         {
-
             try
             {
                 StackFrame stackframe1 = new StackFrame(1 + stackLevel);
@@ -63,10 +59,11 @@ namespace dnVirtualDesktop
                     {
                         method = method + ", ";
                     }
+
                     i += 1;
                 }
-                method = method + ")";
 
+                method = method + ")";
 
 
                 String exceptionText = "";
@@ -106,7 +103,7 @@ namespace dnVirtualDesktop
         {
             try
             {
-                Zomp.EventData dd = (Zomp.EventData)d;
+                Zomp.EventData dd = (Zomp.EventData) d;
                 WSHttpBinding b = new WSHttpBinding(SecurityMode.Transport);
                 b.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
                 b.Name = "WSHttpBinding_IService";
@@ -116,16 +113,10 @@ namespace dnVirtualDesktop
                 {
                     z.AddEventToDatabase(dd);
                 }
-
-
             }
             catch (Exception ex)
             {
             }
-
-
         }
-
-
     }
 }

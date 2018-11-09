@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsDesktop;
 using WindowsDesktop.Internal;
+using dnVirtualDesktop.Internal;
 
 namespace dnVirtualDesktop
 {

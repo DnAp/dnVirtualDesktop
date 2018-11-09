@@ -1,4 +1,6 @@
-﻿namespace dnVirtualDesktop
+﻿using dnVirtualDesktop.Internal;
+
+namespace dnVirtualDesktop
 {
     public class HotkeyItem
     {

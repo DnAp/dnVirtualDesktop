@@ -1608,26 +1608,26 @@ namespace dnVirtualDesktop
             {
                 new HotkeyItem[9],
                 new HotkeyItem[9],
-                new HotkeyItem[9]
+                //  new HotkeyItem[9]
             };
             for (var i = 1; i < 10; i++)
             {
                 Enum.TryParse("D" + i, out Keys keyCode);
 
                 var keyGoTo = new Hotkey(i.ToString());
-                hotKeyList[0][i] = new HotkeyItem("Navigate to Desktop", keyGoTo);
+                hotKeyList[0][i-1] = new HotkeyItem("Navigate to Desktop", keyGoTo);
 
                 keyGoTo.HotkeyActivated += VirtualDestopFunctions.DesktopGo;
                 keyGoTo.Register(keyCode, false, false, false, true);
 
                 var keyMoveTo = new Hotkey(i.ToString());
-                hotKeyList[1][i] = new HotkeyItem("Move Window to Desktop", keyMoveTo);
-
-                var keyMoveFollowTo = new Hotkey(i.ToString());
-                hotKeyList[2][i] = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo);
+                hotKeyList[1][i-1] = new HotkeyItem("Move Window to Desktop", keyMoveTo);
 
                 keyMoveTo.HotkeyActivated += VirtualDestopFunctions.DesktopMove;
                 keyMoveTo.Register(keyCode, false, false, true, true);
+
+                //var keyMoveFollowTo = new Hotkey(i.ToString());
+                //hotKeyList[2][i-1] = new HotkeyItem("Move Window to Desktop & Follow", keyMoveFollowTo);
 
                 //keyMoveFollowTo.HotkeyActivated += VirtualDestopFunctions.DesktopMoveFollow;
                 //keyMoveFollowTo.Register(keyCode, true, true, false, true);
